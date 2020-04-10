@@ -1,0 +1,11 @@
+---
+title: "climate_crop_model"
+author: "Bridget Gibbons"
+date: "4/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
