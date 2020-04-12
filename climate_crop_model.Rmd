@@ -9,6 +9,30 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Loading in the climate data provided (clim.txt): 
+
+```{r}
+
+library(tidyverse)
+clim = data.frame(read_csv("clim.csv"))
+view(clim)
+
+
+clim_month = clim %>% 
+  group_by(month, year) %>% 
+  summarize(meantmax = mean(tmax_c), precip=sum(precip)) 
+
+## gives average monthly maximum daily temperature, and monthly precipitation from a data frame called clim  with columns year, month, precip and tmax_c
+
+
+## Filtering the data frame for only months 1 and 2. This is because our min daily temperature must be in month 2 and our precipitation must be in month 1.
+
+clim_month_1and2 = clim_month %>%
+filter(month %in% c(1, 2))
+
+
+```
+
 # Bringing in our model from our .R file:
 
 ```{r}
@@ -17,17 +41,7 @@ source("")
 
 ```
 
-
 # 3. 
-## Loading in the climate data provided (clim.txt): 
-
-```{r}
-
-
-
-```
-
-
 ## Using our model to estimate how almond yield anomalies for each year in the record:
 
 ```{r}
