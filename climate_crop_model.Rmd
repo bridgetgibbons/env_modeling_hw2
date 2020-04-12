@@ -46,7 +46,8 @@ source("")
 
 ```{r}
 
-
+## for the input "precipitation" in the model
+## precipitation = clim_month_1and2$precip
 
 ```
 
