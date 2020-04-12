@@ -9,3 +9,64 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Bringing in our model from our .R file:
+
+```{r}
+
+source("")
+
+```
+
+
+# 3. 
+## Loading in the climate data provided (clim.txt): 
+
+```{r}
+
+
+
+```
+
+
+## Using our model to estimate how almond yield anomalies for each year in the record:
+
+```{r}
+
+
+
+```
+
+
+## Graphing the results:
+
+```{r}
+
+
+
+```
+
+
+# 4.
+## Estimating the mean annual yield anomaly if the last 20 years had been 2C warmer:
+
+```{r}
+
+
+
+```
+
+## Varying one of the parameters by sampling from a normal distribution; with mean the value from Lobell et al., (2006) and standard deviation 10% of the mean
+
+```{r}
+
+
+
+```
+
+## Creating a box plot of mean annual yield anomaly for baseline and 2C climate (boxes show variation due to uncertainty in the parameter):
+
+```{r}
+
+
+
+```
