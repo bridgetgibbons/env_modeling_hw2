@@ -24,19 +24,26 @@ clim_month = clim %>%
 ## gives average monthly maximum and minimum daily temperatures, and monthly precipitation from a data frame called clim
 
 
-## Filtering the data frame for only months 1 and 2. This is because our min daily temperature must be in month 2 and our precipitation must be in month 1.
-
-clim_month_1and2 = clim_month %>% 
-  filter(month %in% c(1, 2))
-
+## Filtering the data frame for only temperatures in month 1 and precipitation in month 2.
 
 clim_mintemp = clim_month %>% 
   select("month", "year", "meantmin") %>% 
-  filter(month == 2)
+  filter(month == 2) %>% 
+  rename(month_temp = month)
 
 clim_precip = clim_month %>% 
   select("month", "year", "precip") %>% 
-  filter(month == 1)
+  filter(month == 1) %>% 
+  rename(month_precip = month)
+
+## Now combining the two data frames above into one usable data frame, "clim_joined":
+
+clim_joined <- clim_mintemp %>% 
+  inner_join(clim_precip, by = c("year"))
+
+clim_joined <- clim_joined %>% 
+  ungroup() %>% 
+  select(-"month_temp", -"month_precip")
 
 
 ```

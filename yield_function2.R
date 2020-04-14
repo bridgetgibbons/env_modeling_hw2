@@ -1,28 +1,34 @@
 # almond yield function (Kaili's version)
 
-# 1.
+# 1. and 2.
 ## Implementing a model of almond yield anomaly (difference from average) in R based on Lobell et al. (2006)
 
-almond_yield = function(x1 = -0.015, x2 = -0.0046, x3 = -0.07, x4 = 0.0043, intercept = 0.28, min_monthly_temp, precipitation){
   
-  yield_anomaly = (x1*min_monthly_temp) + (x2*(min_monthly_temp^2)) + (x3*(precipitation^2)) + intercept
-  
-  return(yield_anomaly)
-  
-  # error checking for when min_monthly_temp or precipitation are negative, or when anomaly value is negative?
-  
-  # we need Year to be an input, and have it draw from two separate data frames: year-mintemp and year-precip where only those values (month 1 or 2) are available next to each year name
-  min_monthly_temp = clim_mintemp$meantmin
-  
-  precipitation = clim_precip$precip
-  
-  
-  # then an sapply() here
-  
-}
+  almond_yield_take3 = function(x1 = -0.015, x2 = -0.0046, x3 = -0.07, x4 = 0.0043, intercept = 0.28, climate){
+    
+    
+    clim_joined$yield_anomaly = (x1*clim_joined$meantmin) + (x2*(clim_joined$meantmin^2)) + (x3*(clim_joined$precip^2)) + intercept
+    
+    min_anomaly = min(clim_joined$yield_anomaly)
+    
+    max_anomaly = max(clim_joined$yield_anomaly)
+    
+    
+    # make sure precipitation values are non-negative
+    if (meantmin < 0)
+      return(NA)
+    
+    # make sure anomaly values are non-negative???
+    if (yield_anomaly < 0)
+      return(NA)
+    
+    
+    return(list(annual_anomaly = clim_joined[,c("year", "yield_anomaly")], max = max_anomaly, min = min_anomaly))
+    
+  }
 
+  # then we use this function and apply it to the clim_joined data frame?
 
-# 2. 
-## Having the function return almond yield anomaly for each year, and max and minimum yields over a time series of multiple year inputs.
-
+  mapply(climate, almond_yield_take_2)
+  
 
