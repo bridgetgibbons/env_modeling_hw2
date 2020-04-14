@@ -15,7 +15,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 clim = data.frame(read_csv("clim.csv"))
-view(clim)
 
 
 clim_month = clim %>% 
@@ -31,13 +30,22 @@ clim_month_1and2 = clim_month %>%
   filter(month %in% c(1, 2))
 
 
+clim_mintemp = clim_month %>% 
+  select("month", "year", "meantmin") %>% 
+  filter(month == 2)
+
+clim_precip = clim_month %>% 
+  select("month", "year", "precip") %>% 
+  filter(month == 1)
+
+
 ```
 
 # Bringing in our model from our .R file:
 
 ```{r}
 
-source("")
+source("yield_function.R")
 
 ```
 
@@ -55,6 +63,8 @@ source("")
 ## Graphing the results:
 
 ```{r}
+
+library(ggplot2)
 
 
 
