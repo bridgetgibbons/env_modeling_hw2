@@ -52,7 +52,9 @@ clim_joined <- clim_joined %>%
 
 ```{r}
 
-source("yield_function.R")
+source("yield_function_bg.R")
+
+yield_function_bg(climate = clim)
 
 ```
 
