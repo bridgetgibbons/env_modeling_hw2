@@ -10,11 +10,11 @@
       mutate(yield_anomaly = NA)
     
     for(i in 1:nrow(clim_joined)){
-    clim_joined$yield_anomaly = (x1*clim_joined$meantmin) + (x2*(clim_joined$meantmin^2)) + (x3*(clim_joined$precip^2)) + intercept}
+    clim_joined_YA$yield_anomaly = (x1*clim_joined_YA$meantmin) + (x2*(clim_joined_YA$meantmin^2)) + (x3*(clim_joined_YA$precip^2)) + intercept}
     
-    min_anomaly = min(clim_joined$yield_anomaly)
+    min_anomaly = min(clim_joined_YA$yield_anomaly)
     
-    max_anomaly = max(clim_joined$yield_anomaly)
+    max_anomaly = max(clim_joined_YA$yield_anomaly)
     
     
     # make sure precipitation values are non-negative
@@ -26,7 +26,7 @@
       return(NA)
     
     
-    return(list(annual_anomaly = clim_joined[,c("year", "yield_anomaly")], max_anomaly, min_anomaly))
+    return(list(annual_anomaly = clim_joined_YA[,c("year", "yield_anomaly")], max_anomaly, min_anomaly))
     
   }
 
