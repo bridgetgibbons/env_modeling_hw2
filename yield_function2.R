@@ -9,8 +9,10 @@
     clim_joined_YA <- clim_joined %>% 
       mutate(yield_anomaly = NA)
     
-    for(i in 1:nrow(clim_joined)){
-    clim_joined_YA$yield_anomaly = (x1*clim_joined_YA$meantmin) + (x2*(clim_joined_YA$meantmin^2)) + (x3*(clim_joined_YA$precip^2)) + intercept}
+    for(i in 1:nrow(clim_joined_YA)){
+    clim_joined_YA$yield_anomaly[i] = (x1*clim_joined_YA$meantmin[i]) + (x2*((clim_joined_YA$meantmin[i])^2)) + (x3*(clim_joined_YA$precip[i]^2)) + intercept
+    
+    }
     
     min_anomaly = min(clim_joined_YA$yield_anomaly)
     
@@ -22,7 +24,7 @@
       return(NA)
     
     # make sure anomaly values are non-negative???
-    if (yield_anomaly < 0)
+    if (clim_joined_YA$year != class(integer))
       return(NA)
     
     
@@ -30,8 +32,5 @@
     
   }
 
-  # then we use this function and apply it to the clim_joined data frame?
-
-  mapply(climate, almond_yield_take_3)
   
 
