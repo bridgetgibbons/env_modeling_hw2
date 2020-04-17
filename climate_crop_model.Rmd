@@ -19,7 +19,7 @@ clim = data.frame(read_csv("clim.csv"))
 
 clim_month = clim %>% 
   group_by(month, year) %>% 
-  summarize(meantmax = mean(tmax_c), meantmin = mean(tmin_c), precip=sum(precip)) 
+  summarize(meantmax = mean(tmax_c), meantmin = mean(tmin_c), precip=mean(precip)) 
 
 ## gives average monthly maximum and minimum daily temperatures, and monthly precipitation from a data frame called clim
 
