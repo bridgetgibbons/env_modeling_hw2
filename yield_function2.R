@@ -23,12 +23,12 @@
       return(NA)
     
     
-    return(list(annual_anomaly = clim_joined[,c("year", "yield_anomaly")], max = max_anomaly, min = min_anomaly))
+    return(list(annual_anomaly = clim_joined[,c("year", "yield_anomaly")], max_anomaly, min_anomaly))
     
   }
 
   # then we use this function and apply it to the clim_joined data frame?
 
-  mapply(climate, almond_yield_take_2)
+  mapply(climate, almond_yield_take_3)
   
 
