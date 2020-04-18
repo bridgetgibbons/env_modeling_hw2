@@ -51,6 +51,7 @@ clim_joined <- clim_joined %>%
 
 ```
 
+# 3. 
 # Bringing in our model from our .R file:
 
 ```{r}
@@ -61,7 +62,7 @@ yield_function_bg(climate = clim)
 
 ```
 
-# 3. 
+
 ## Using our model to estimate how almond yield anomalies for each year in the record:
 
 ```{r}
