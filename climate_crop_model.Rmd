@@ -13,6 +13,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 
+# load necessary packages
+# read in the climate data
+
 library(tidyverse)
 clim = data.frame(read_csv("clim.csv"))
 
@@ -94,7 +97,13 @@ library(ggplot2)
 
 ```{r}
 
+# create parameter values for x4 from a normal distribution
+# it needs to have 24 values
 
+new_param_x4 <- as.data.frame(matrix(nrow = 22, ncol = 1)) # create a data frame to store the parameter values
+colnames(new_param_x4) = c("x4_new")
+
+new_param_x4$x4_new <- rnorm(n = 22, mean = 0.0043, sd = 0.00043) # fill in the dataframe column with new parameter values for x4: centered on a mean of 0.0043 with a standard deviation of 10% of the meean
 
 ```
 
@@ -102,6 +111,13 @@ library(ggplot2)
 
 ```{r}
 
+# run the model for baseline temperature using new x4 parameter
 
+yield_function_bg(climate = clim, x4 = new_param_x4$x4_new)
+
+# run the model for 2C warmer temperature using new x4 parameter
+
+
+# create a box plot to compare the two:
 
 ```
