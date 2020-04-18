@@ -32,3 +32,21 @@ almond_yield_take2 = function(x1 = -0.015, x2 = -0.0046, x3 = -0.07, x4 = 0.0043
   return(list(annual_anomaly = climate[,c("year", "yield_anomaly")], max = max_anomaly, min = min_anomaly))
   
 }
+
+##########################
+
+almond_yield_take2 = function(x1 = -0.015, x2 = -0.0046, x3 = -0.07, x4 = 0.0043, interceptt = 0.28, climate){
+
+clim_month = climate %>% 
+  group_by(month, year) %>% 
+  summarize(meantmax = mean(tmax_c), meantmin = mean(tmin_c), precip=mean(precip)) 
+
+jan <- clim_month %>% 
+  filter(month == 1)
+
+feb <- clim_month %>% 
+  filter(month == 2)
+
+df_yield <- as.da
+
+}
