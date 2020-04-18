@@ -125,20 +125,24 @@ warmer_newparam <- yield_function_bg(climate = clim_warmer, x4 = new_param_x4$x4
 
 # get the relevant values out of the list and into dataframe to use in the plot
 
-baseline_newparam_df <- as.data.frame(baseline_newparam[1])
-warmer_newparam_df <- as.data.frame(warmer_newparam[1])
+baseline_newparam_df <- as.data.frame(baseline_newparam[1]) %>% 
+  mutate(type = "baseline")
 
-boxplot_param_df <- inner_join(baseline_newparam_df, warmer_newparam_df, by = "year") %>% 
-  mutate(baseline = YA.x, warmer = YA.y)
+warmer_newparam_df <- as.data.frame(warmer_newparam[1]) %>% 
+  mutate(type = "warmer")
+
+boxplot_df <- rbind(baseline_newparam_df, warmer_newparam_df)
 
 # create a box plot to compare the two
 
-boxplot_param_df$year <- as.factor(boxplot_param_df$year)
+#boxplot_param_df$year <- as.factor(boxplot_param_df$year)
 
-param_boxplots <- ggplot(boxplot_param_df, aes(x = year)) +
-  geom_boxplot(aes(y = baseline), color = "blue") +
-  geom_boxplot(aes(y = warmer), color = "green")
+boxplot_yields <- ggplot(boxplot_df, aes(x = type, y = YA)) +
+  geom_boxplot() +
+  geom_jitter(aes(color = type), width = 0.1, alpha = 0.7) +
+  theme_classic()
 
-param_boxplots
+boxplot_yields
+
 
 ```
