@@ -88,7 +88,10 @@ library(ggplot2)
 
 ```{r}
 
+# create new data frame for warmer climates by adding 2 to each tmin_c value
 
+clim_warmer <- clim %>% 
+  mutate(tmin_c = tmin_c + 2)
 
 ```
 
@@ -117,6 +120,7 @@ yield_function_bg(climate = clim, x4 = new_param_x4$x4_new)
 
 # run the model for 2C warmer temperature using new x4 parameter
 
+yield_function_bg(climate = clim_warmer, x4 = new_param_x4$x4_new)
 
 # create a box plot to compare the two:
 
