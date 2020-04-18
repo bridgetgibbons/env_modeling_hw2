@@ -117,12 +117,28 @@ new_param_x4$x4_new <- rnorm(n = 22, mean = 0.0043, sd = 0.00043) # fill in the 
 
 # run the model for baseline temperature using new x4 parameter
 
-yield_function_bg(climate = clim, x4 = new_param_x4$x4_new)
+baseline_newparam <- yield_function_bg(climate = clim, x4 = new_param_x4$x4_new)
 
 # run the model for 2C warmer temperature using new x4 parameter
 
-yield_function_bg(climate = clim_warmer, x4 = new_param_x4$x4_new)
+warmer_newparam <- yield_function_bg(climate = clim_warmer, x4 = new_param_x4$x4_new)
 
-# create a box plot to compare the two:
+# get the relevant values out of the list and into dataframe to use in the plot
+
+baseline_newparam_df <- as.data.frame(baseline_newparam[1])
+warmer_newparam_df <- as.data.frame(warmer_newparam[1])
+
+boxplot_param_df <- inner_join(baseline_newparam_df, warmer_newparam_df, by = "year") %>% 
+  mutate(baseline = YA.x, warmer = YA.y)
+
+# create a box plot to compare the two
+
+boxplot_param_df$year <- as.factor(boxplot_param_df$year)
+
+param_boxplots <- ggplot(boxplot_param_df, aes(x = year)) +
+  geom_boxplot(aes(y = baseline), color = "blue") +
+  geom_boxplot(aes(y = warmer), color = "green")
+
+param_boxplots
 
 ```
