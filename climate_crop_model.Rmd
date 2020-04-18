@@ -79,7 +79,7 @@ yield_function_bg(climate = clim)
 
 library(ggplot2)
 
-
+# theme = minimal
 
 ```
 
@@ -124,6 +124,7 @@ baseline_newparam <- yield_function_bg(climate = clim, x4 = new_param_x4$x4_new)
 warmer_newparam <- yield_function_bg(climate = clim_warmer, x4 = new_param_x4$x4_new)
 
 # get the relevant values out of the list and into dataframe to use in the plot
+# prepare the data in tidy format in single dataframe for boxplot
 
 baseline_newparam_df <- as.data.frame(baseline_newparam[1]) %>% 
   mutate(type = "baseline")
