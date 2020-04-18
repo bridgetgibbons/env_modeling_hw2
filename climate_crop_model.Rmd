@@ -13,6 +13,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 
+# load necessary packages
+# read in the climate data
+
 library(tidyverse)
 clim = data.frame(read_csv("clim.csv"))
 
@@ -48,6 +51,7 @@ clim_joined <- clim_joined %>%
 
 ```
 
+# 3. 
 # Bringing in our model from our .R file:
 
 ```{r}
@@ -58,7 +62,7 @@ yield_function_bg(climate = clim)
 
 ```
 
-# 3. 
+
 ## Using our model to estimate how almond yield anomalies for each year in the record:
 
 ```{r}
@@ -85,7 +89,10 @@ library(ggplot2)
 
 ```{r}
 
+# create new data frame for warmer climates by adding 2 to each tmin_c value
 
+clim_warmer <- clim %>% 
+  mutate(tmin_c = tmin_c + 2)
 
 ```
 
@@ -94,7 +101,13 @@ library(ggplot2)
 
 ```{r}
 
+# create parameter values for x4 from a normal distribution
+# it needs to have 24 values
 
+new_param_x4 <- as.data.frame(matrix(nrow = 22, ncol = 1)) # create a data frame to store the parameter values
+colnames(new_param_x4) = c("x4_new")
+
+new_param_x4$x4_new <- rnorm(n = 22, mean = 0.0043, sd = 0.00043) # fill in the dataframe column with new parameter values for x4: centered on a mean of 0.0043 with a standard deviation of 10% of the meean
 
 ```
 
@@ -102,6 +115,30 @@ library(ggplot2)
 
 ```{r}
 
+# run the model for baseline temperature using new x4 parameter
 
+baseline_newparam <- yield_function_bg(climate = clim, x4 = new_param_x4$x4_new)
+
+# run the model for 2C warmer temperature using new x4 parameter
+
+warmer_newparam <- yield_function_bg(climate = clim_warmer, x4 = new_param_x4$x4_new)
+
+# get the relevant values out of the list and into dataframe to use in the plot
+
+baseline_newparam_df <- as.data.frame(baseline_newparam[1])
+warmer_newparam_df <- as.data.frame(warmer_newparam[1])
+
+boxplot_param_df <- inner_join(baseline_newparam_df, warmer_newparam_df, by = "year") %>% 
+  mutate(baseline = YA.x, warmer = YA.y)
+
+# create a box plot to compare the two
+
+boxplot_param_df$year <- as.factor(boxplot_param_df$year)
+
+param_boxplots <- ggplot(boxplot_param_df, aes(x = year)) +
+  geom_boxplot(aes(y = baseline), color = "blue") +
+  geom_boxplot(aes(y = warmer), color = "green")
+
+param_boxplots
 
 ```
