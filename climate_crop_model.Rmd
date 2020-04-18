@@ -75,7 +75,7 @@ yield_function_bg(climate = clim)
 
 library(ggplot2)
 
-
+# theme = minimal
 
 ```
 
