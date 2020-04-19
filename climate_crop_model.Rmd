@@ -6,10 +6,12 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE)
 ```
 
-## Loading in the climate data provided (clim.txt): 
+### Loading in the climate data provided (clim.txt): 
 
 ```{r}
 
@@ -51,9 +53,9 @@ clim_joined <- clim_joined %>%
 
 ```
 
-# 3. 
-## Bringing in our model from our .R file:
-## Using our model to estimate almond yield anomalies for each year in the record:
+## 3. 
+### Bringing in our model from our .R file:
+### Using our model to estimate almond yield anomalies for each year in the record:
 
 ```{r}
 
@@ -64,7 +66,7 @@ yield_function_bg(climate = clim)
 ```
 
 
-## Graphing the results:
+### Graphing the results:
 
 ```{r}
 
@@ -88,8 +90,8 @@ ggplot(results_df, aes(x = year, y = YA)) + geom_point(color = "blue", size = 3,
 ```
 
 
-# 4.
-## Estimating the mean annual yield anomaly if the last 20 years had been 2C warmer:
+## 4.
+### Estimating the mean annual yield anomaly if the last 20 years had been 2C warmer:
 
 ```{r}
 
@@ -109,13 +111,13 @@ mean_yield_anomaly_2c
 
 ```
 
-# 5.
-## Varying one of the parameters by sampling from a normal distribution; with mean the value from Lobell et al., (2006) and standard deviation 10% of the mean
+## 5.
+### Varying one of the parameters by sampling from a normal distribution; with mean the value from Lobell et al., (2006) and standard deviation 10% of the mean
 
 ```{r}
 
 # create parameter values for x4 from a normal distribution
-# it needs to have 24 values
+# it needs to have 22 values
 
 new_param_x4 <- as.data.frame(matrix(nrow = 22, ncol = 1)) # create a data frame to store the parameter values
 colnames(new_param_x4) = c("x4_new")
@@ -124,7 +126,7 @@ new_param_x4$x4_new <- rnorm(n = 22, mean = 0.0043, sd = 0.00043) # fill in the 
 
 ```
 
-## Creating a box plot of mean annual yield anomaly for baseline and 2C climate (boxes show variation due to uncertainty in the parameter):
+### Creating a box plot of mean annual yield anomaly for baseline and 2C climate (boxes show variation due to uncertainty in the parameter):
 
 ```{r}
 
@@ -165,6 +167,10 @@ boxplot_yields <- ggplot(boxplot_df, aes(x = type, y = YA)) +
   theme(legend.position = "none")
 
 boxplot_yields
+
+mean_anom_base
+
+mean_anom_2c
 
 
 ```
