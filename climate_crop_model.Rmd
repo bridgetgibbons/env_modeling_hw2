@@ -22,35 +22,6 @@ library(tidyverse)
 clim = data.frame(read_csv("clim.csv"))
 
 
-clim_month = clim %>% 
-  group_by(month, year) %>% 
-  summarize(meantmax = mean(tmax_c), meantmin = mean(tmin_c), precip=mean(precip)) 
-
-## gives average monthly maximum and minimum daily temperatures, and monthly precipitation from a data frame called clim
-
-
-## Filtering the data frame for only temperatures in month 1 and precipitation in month 2.
-
-clim_mintemp = clim_month %>% 
-  select("month", "year", "meantmin") %>% 
-  filter(month == 2) %>% 
-  rename(month_temp = month)
-
-clim_precip = clim_month %>% 
-  select("month", "year", "precip") %>% 
-  filter(month == 1) %>% 
-  rename(month_precip = month)
-
-## Now combining the two data frames above into one usable data frame, "clim_joined":
-
-clim_joined <- clim_mintemp %>% 
-  inner_join(clim_precip, by = c("year"))
-
-clim_joined <- clim_joined %>% 
-  ungroup() %>% 
-  select(-"month_temp", -"month_precip")
-
-
 ```
 
 ## 3. 
@@ -63,6 +34,8 @@ source("yield_function_bg.R")
 
 yield_function_bg(climate = clim)
 
+# The yearly yield anomaly values are listed below. In addition, the minimum value (or maximum amount of anomaly from the mean) is -0.687 in year 1992; and the maximum value (or minimum amount of anomaly from the mean) is -0.117 in year 1995.
+
 ```
 
 
@@ -70,7 +43,7 @@ yield_function_bg(climate = clim)
 
 ```{r}
 
-## Convert the yield_anomaly_year portion of our results into a data frame:
+# Convert the yield_anomaly_year portion of our results into a data frame:
 
 results <- yield_function_bg(climate = clim)
 
@@ -80,11 +53,11 @@ results_df <- as.data.frame(results[1])
 
 mean_result <- mean(results_df$YA)
   
-## graph the data: 
+# graph the data: 
 
 library(ggplot2)
 
-ggplot(results_df, aes(x = year, y = YA)) + geom_point(color = "blue", size = 3, theme = "minimal") + xlab("Year") + ylab("Yield Anomaly")
+ggplot(results_df, aes(x = year, y = YA)) + geom_point(color = "blue", size = 3) + theme_classic() + labs(x = "Year", y = "Yield Anomaly", title = "Yield Anomaly of Almonds by Year")
 
 
 ```
@@ -112,7 +85,7 @@ mean_yield_anomaly_2c
 ```
 
 ## 5.
-### Varying one of the parameters by sampling from a normal distribution; with mean the value from Lobell et al., (2006) and standard deviation 10% of the mean
+### Varying one of the parameters by sampling from a normal distribution; with mean the value from Lobell et al., (2006) and standard deviation 10% of the mean:
 
 ```{r}
 
