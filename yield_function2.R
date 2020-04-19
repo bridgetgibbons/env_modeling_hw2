@@ -4,9 +4,9 @@
 ## Implementing a model of almond yield anomaly (difference from average) in R based on Lobell et al. (2006)
 
   
-  almond_yield_take3 = function(x1 = -0.015, x2 = -0.0046, x3 = -0.07, x4 = 0.0043, intercept = 0.28, clim_joined){
+  almond_yield_take3 = function(x1 = -0.015, x2 = -0.0046, x3 = -0.07, x4 = 0.0043, intercept = 0.28, climate){
     
-    clim_joined_YA <- clim_joined %>% 
+    clim_joined_YA <- climate %>% 
       mutate(yield_anomaly = NA)
     
     for(i in 1:nrow(clim_joined_YA)){
