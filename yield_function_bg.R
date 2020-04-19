@@ -36,6 +36,17 @@ yield_function_bg = function(x1 = -0.015, x2 = -0.0046, x3 = -0.07, x4 = 0.0043,
   min_value <- yield_anomaly_year[yield_anomaly_year$YA == min(yield_anomaly_year$YA),]
   max_value <- yield_anomaly_year[yield_anomaly_year$YA == max(yield_anomaly_year$YA),]
   
+  # error checking
+  
+  # make sure precipitation values are non-negative
+  if (precip < 0)
+    return(NA)
+  
+  # make sure anomaly values are non-negative???
+  if (clim$year != class(integer))
+    return(NA)
+  
+  
   # set the function to return a list of the values of interest
   
   return(list(yield_anomaly_year, min_value, max_value))
