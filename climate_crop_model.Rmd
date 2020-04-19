@@ -34,10 +34,10 @@ source("yield_function_bg.R")
 
 yield_function_bg(climate = clim)
 
-# The yearly yield anomaly values are listed below. In addition, the minimum value (or maximum amount of anomaly from the mean) is -0.687 in year 1992; and the maximum value (or minimum amount of anomaly from the mean) is -0.117 in year 1995.
 
 ```
 
+The yearly yield anomaly values are listed above. In addition, the minimum value (or maximum amount of anomaly from the mean) is -0.687 ton/acre in year 1992; and the maximum value (or minimum amount of anomaly from the mean) is -0.117 ton/acre in year 1995.
 
 ### Graphing the results:
 
@@ -83,6 +83,8 @@ mean_yield_anomaly_2c <- mean(results_2c_df$YA)
 mean_yield_anomaly_2c
 
 ```
+
+The mean annual yield anomaly if the last 20 years had been 2C warmer is -0.656 ton/acre.
 
 ## 5.
 ### Varying one of the parameters by sampling from a normal distribution; with mean the value from Lobell et al., (2006) and standard deviation 10% of the mean:
@@ -135,8 +137,7 @@ boxplot_yields <- ggplot(boxplot_df, aes(x = type, y = YA)) +
   geom_boxplot() +
   geom_jitter(aes(color = type), width = 0.05, alpha = 0.7) +
   theme_classic() +
-  xlab("Scenario") +
-  ylab("Annual Yield Anomaly") +
+  labs(x = "Scenario", y = "Annual Yield Anomaly", title = "Mean Annual Yield Anomaly Values for Baseline and 2C Warmer Scenarios") +
   theme(legend.position = "none")
 
 boxplot_yields
@@ -145,5 +146,7 @@ mean_anom_base
 
 mean_anom_2c
 
-
 ```
+
+The mean annual yield anomaly for the baseline scenario with a varied x4 parameter is -0.414 ton/acre.
+The maen annual yield anomaly for the 2C warmer scenario with a varied x4 parameter is -0.644 ton/acre.

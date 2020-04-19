@@ -17,6 +17,16 @@ yield_function_bg = function(x1 = -0.015, x2 = -0.0046, x3 = -0.07, x4 = 0.0043,
   feb_temp <- clim_month %>% 
     dplyr::filter(month == 2)
   
+  # error checking
+  
+  # make sure precipitation values are non-negative
+  if (min(clim$precip) < 0)
+    return(NA)
+  
+  # check length of columns
+  if(length(feb_temp$meantmin) != length(jan_precip$precip))
+    return(NA)
+  
   # create a dataframe to store the yield anomaly values; use year values from one of the existing data frames 
   
   output_df <- data.frame(year = feb_temp$year, YA = NA)
@@ -35,25 +45,6 @@ yield_function_bg = function(x1 = -0.015, x2 = -0.0046, x3 = -0.07, x4 = 0.0043,
   
   min_value <- yield_anomaly_year[yield_anomaly_year$YA == min(yield_anomaly_year$YA),]
   max_value <- yield_anomaly_year[yield_anomaly_year$YA == max(yield_anomaly_year$YA),]
-  
-  # error checking
-  
-  # make sure precipitation values are non-negative
-  if (min(clim$precip) < 0)
-    return(NA)
-  
-  # make sure year values are integers
- #if (class(clim$year) != integer)
-  # return(NA)
-  
-  # make sure input data has correct column names
-  
-  #if(c("month", "year", "tmax_c", "tmin_c", "precip") %in% colnames(clim) = "FALSE")
-    # return(NA)
-  
-  # check length of columns
-  if(length(feb_temp$meantmin) != length(jan_precip$precip))
-    return(NA)
   
   
   # set the function to return a list of the values of interest
