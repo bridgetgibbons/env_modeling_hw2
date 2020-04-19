@@ -17,9 +17,9 @@ yield_function_bg = function(x1 = -0.015, x2 = -0.0046, x3 = -0.07, x4 = 0.0043,
   feb_temp <- clim_month %>% 
     dplyr::filter(month == 2)
   
-  # create a column to store the yield anomaly values in one of the existing data frames that has rows for each year of interest
+  # create a dataframe to store the yield anomaly values; use year values from one of the existing data frames 
   
-  output_df <- as.data.frame(feb_temp) %>% mutate(YA = NA)
+  output_df <- data.frame(year = feb_temp$year, YA = NA)
   
   # use a for loop to have the function run for each row [i] using the columns of interest, and store the output in the YA column of the output data frame
   

@@ -73,6 +73,10 @@ yield_function_bg(climate = clim)
 results <- yield_function_bg(climate = clim)
 
 results_df <- as.data.frame(results[1])
+
+# calculate mean
+
+mean_result <- mean(results_df$YA)
   
 ## graph the data: 
 
@@ -136,10 +140,15 @@ warmer_newparam <- yield_function_bg(climate = clim_warmer, x4 = new_param_x4$x4
 # prepare the data in tidy format in single dataframe for boxplot
 
 baseline_newparam_df <- as.data.frame(baseline_newparam[1]) %>% 
-  mutate(type = "baseline")
+  mutate(type = "Baseline")
 
 warmer_newparam_df <- as.data.frame(warmer_newparam[1]) %>% 
-  mutate(type = "warmer")
+  mutate(type = "2C Warmer")
+
+# calculate mean values
+
+mean_anom_base <- mean(baseline_newparam_df$YA)
+mean_anom_2c <- mean(warmer_newparam_df$YA)
 
 boxplot_df <- rbind(baseline_newparam_df, warmer_newparam_df)
 
@@ -149,8 +158,11 @@ boxplot_df <- rbind(baseline_newparam_df, warmer_newparam_df)
 
 boxplot_yields <- ggplot(boxplot_df, aes(x = type, y = YA)) +
   geom_boxplot() +
-  geom_jitter(aes(color = type), width = 0.1, alpha = 0.7) +
-  theme_classic()
+  geom_jitter(aes(color = type), width = 0.05, alpha = 0.7) +
+  theme_classic() +
+  xlab("Scenario") +
+  ylab("Annual Yield Anomaly") +
+  theme(legend.position = "none")
 
 boxplot_yields
 
