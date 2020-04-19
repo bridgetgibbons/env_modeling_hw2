@@ -52,7 +52,8 @@ clim_joined <- clim_joined %>%
 ```
 
 # 3. 
-# Bringing in our model from our .R file:
+## Bringing in our model from our .R file:
+## Using our model to estimate almond yield anomalies for each year in the record:
 
 ```{r}
 
@@ -63,23 +64,22 @@ yield_function_bg(climate = clim)
 ```
 
 
-## Using our model to estimate how almond yield anomalies for each year in the record:
-
-```{r}
-
-## for the input "precipitation" in the model
-## precipitation = clim_month_1and2$precip
-
-```
-
-
 ## Graphing the results:
 
 ```{r}
 
+## Convert the yield_anomaly_year portion of our results into a data frame:
+
+results <- yield_function_bg(climate = clim)
+
+results_df <- as.data.frame(results[1])
+  
+## graph the data: 
+
 library(ggplot2)
 
-# theme = minimal
+ggplot(results_df, aes(x = year, y = YA)) + geom_point(color = "blue", size = 3, theme = "minimal") + xlab("Year") + ylab("Yield Anomaly")
+
 
 ```
 
@@ -94,6 +94,15 @@ library(ggplot2)
 clim_warmer <- clim %>% 
   mutate(tmin_c = tmin_c + 2)
 
+results_2c <- yield_function_bg(climate = clim_warmer)
+
+results_2c_df <- as.data.frame(results_2c[1])
+
+# take the mean of the new values
+
+mean_yield_anomaly_2c <- mean(results_2c_df$YA)
+mean_yield_anomaly_2c
+
 ```
 
 # 5.
@@ -107,7 +116,7 @@ clim_warmer <- clim %>%
 new_param_x4 <- as.data.frame(matrix(nrow = 22, ncol = 1)) # create a data frame to store the parameter values
 colnames(new_param_x4) = c("x4_new")
 
-new_param_x4$x4_new <- rnorm(n = 22, mean = 0.0043, sd = 0.00043) # fill in the dataframe column with new parameter values for x4: centered on a mean of 0.0043 with a standard deviation of 10% of the meean
+new_param_x4$x4_new <- rnorm(n = 22, mean = 0.0043, sd = 0.00043) # fill in the dataframe column with new parameter values for x4: centered on a mean of 0.0043 with a standard deviation of 10% of the mean
 
 ```
 
