@@ -1,6 +1,6 @@
 ---
-title: "climate_crop_model"
-author: "Bridget Gibbons"
+title: "ESM 232 - Assignment 2"
+author: "Bridget Gibbons, Kaili Brande"
 date: "4/10/2020"
 output: html_document
 ---
@@ -30,9 +30,9 @@ clim = data.frame(read_csv("clim.csv"))
 
 ```{r}
 
-source("yield_function_bg.R")
+source("yield_function_final.R")
 
-yield_function_bg(climate = clim)
+yield_function_final(climate = clim)
 
 
 ```
@@ -45,7 +45,7 @@ The yearly yield anomaly values are listed above. In addition, the minimum value
 
 # Convert the yield_anomaly_year portion of our results into a data frame:
 
-results <- yield_function_bg(climate = clim)
+results <- yield_function_final(climate = clim)
 
 results_df <- as.data.frame(results[1])
 
@@ -73,7 +73,7 @@ ggplot(results_df, aes(x = year, y = YA)) + geom_point(color = "blue", size = 3)
 clim_warmer <- clim %>% 
   mutate(tmin_c = tmin_c + 2)
 
-results_2c <- yield_function_bg(climate = clim_warmer)
+results_2c <- yield_function_final(climate = clim_warmer)
 
 results_2c_df <- as.data.frame(results_2c[1])
 
@@ -107,11 +107,11 @@ new_param_x4$x4_new <- rnorm(n = 22, mean = 0.0043, sd = 0.00043) # fill in the 
 
 # run the model for baseline temperature using new x4 parameter
 
-baseline_newparam <- yield_function_bg(climate = clim, x4 = new_param_x4$x4_new)
+baseline_newparam <- yield_function_final(climate = clim, x4 = new_param_x4$x4_new)
 
 # run the model for 2C warmer temperature using new x4 parameter
 
-warmer_newparam <- yield_function_bg(climate = clim_warmer, x4 = new_param_x4$x4_new)
+warmer_newparam <- yield_function_final(climate = clim_warmer, x4 = new_param_x4$x4_new)
 
 # get the relevant values out of the list and into dataframe to use in the plot
 # prepare the data in tidy format in single dataframe for boxplot
@@ -149,4 +149,4 @@ mean_anom_2c
 ```
 
 The mean annual yield anomaly for the baseline scenario with a varied x4 parameter is -0.414 ton/acre.
-The maen annual yield anomaly for the 2C warmer scenario with a varied x4 parameter is -0.644 ton/acre.
+The mean annual yield anomaly for the 2C warmer scenario with a varied x4 parameter is -0.644 ton/acre.

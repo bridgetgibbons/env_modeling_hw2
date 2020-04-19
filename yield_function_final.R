@@ -1,4 +1,4 @@
-yield_function_bg = function(x1 = -0.015, x2 = -0.0046, x3 = -0.07, x4 = 0.0043, intercept = 0.28, climate){
+yield_function_final = function(x1 = -0.015, x2 = -0.0046, x3 = -0.07, x4 = 0.0043, intercept = 0.28, climate){
   
   # organize the climate data by month and year
   # create summary of the mean max and min temperatures, and the mean precipitation by month
