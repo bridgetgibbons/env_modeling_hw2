@@ -1,0 +1,72 @@
+---
+title: "Assignment 3"
+author: "Kaili Brande, Bridget Gibbons"
+date: "4/23/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading in necessary packages, the data, and the updated yield model
+
+```{r}
+
+library(tidyverse)
+library(ggplot2)
+library(pse)
+library(sensitivity)
+
+
+clim = data.frame(read_csv("clim.csv"))
+
+
+# Adjust your almond model to  output ONLY the mean almond yield anomoly IF the users sets parameter (e.g mean_only = TRUE))
+source("yield_function_assignment3.R")
+
+yield_function_assignment3(climate = clim)
+
+```
+
+## Performing a sensitivity analysis of how mean anomaly varies ALL of the parameters used in the yield model 
+
+```{r}
+
+# Assuming parameters are normally distributed with standard deviation of 20% mean value
+
+
+```
+
+## Rank the parameters in term of their sensitivity
+
+```{r}
+
+```
+
+## Graph uncertainty in mean yield anomaly across all parameter uncertainty (boxplot and cummulative distribution of the output).
+
+```{r}
+
+
+```
+
+## Repeat using the LHS method:
+
+```{r}
+
+```
+
+## Repeat using the Sobol method:
+
+```{r}
+
+```
+
+## Repeat using twice as many parameter sets as you did in your first sensitivity analysis, to evaluate how this changes the sensitivity results
+
+```{r}
+
+```
+
+## 
