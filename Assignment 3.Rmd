@@ -134,7 +134,20 @@ sens_yield_sobel = sobol2007(model = NULL, X1, X2, nboot = 100)
 
 # run model for the parameter sets
 
+# getting error: no applicable method for 'group_by_' applied to an object of class "c('double', 'numeric')
 
+sobel_result = mapply(FUN = yield_function_assignment3, x1 = sens_yield_sobel$X$sobel_x1, x2 = sens_yield_sobel$X$sobel_x2, x3 = sens_yield_sobel$X$sobel_x3, x4 = sens_yield_sobel$X$sobel_x4, climate = clim)
+
+sens_yield_sobel = sensitivity::tell(sens_yield_sobel, sobel_result, sobel_result.names="ga")
+
+sens_yield_sobel$S
+
+sens_yield_sobel$T
+
+print(sens_yield_sobel)
+plot(sens_yield_sobel)
+
+sens_yield$prcc
 
 
 ```
