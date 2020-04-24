@@ -13,16 +13,21 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 
-library(tidyverse)
+
 library(ggplot2)
 library(pse)
 library(sensitivity)
+library(tidyverse)
 
 
 clim = data.frame(read_csv("clim.csv"))
 
+```
+
+```{r}
 
 # Adjust your almond model to  output ONLY the mean almond yield anomoly IF the users sets parameter (e.g mean_only = TRUE))
+
 source("yield_function_assignment3.R")
 
 yield_function_assignment3(climate = clim)

@@ -1,13 +1,13 @@
 ## assignment 3 version
 
-yield_function_final = function(x1 = -0.015, x2 = -0.0046, x3 = -0.07, x4 = 0.0043, intercept = 0.28, climate){
+yield_function_assignment3 = function(x1 = -0.015, x2 = -0.0046, x3 = -0.07, x4 = 0.0043, intercept = 0.28, climate, mean_only = TRUE){
   
   # organize the climate data by month and year
   # create summary of the mean max and min temperatures, and the mean precipitation by month
   
   clim_month = climate %>% 
-    group_by(month, year) %>% 
-    summarize(meantmax = mean(tmax_c), meantmin = mean(tmin_c), precip=mean(precip)) 
+    dplyr::group_by(month, year) %>% 
+    dplyr::summarize(meantmax = mean(tmax_c), meantmin = mean(tmin_c), precip=mean(precip)) 
   
   # filter for months of interest for almonds
   # january - precipitation
@@ -48,9 +48,17 @@ yield_function_final = function(x1 = -0.015, x2 = -0.0046, x3 = -0.07, x4 = 0.00
   min_value <- yield_anomaly_year[yield_anomaly_year$YA == min(yield_anomaly_year$YA),]
   max_value <- yield_anomaly_year[yield_anomaly_year$YA == max(yield_anomaly_year$YA),]
   
+  mean_value <- mean(yield_anomaly_year$YA)
+  
   
   # set the function to return a list of the values of interest
   
-  return(list(yield_anomaly_year, min_value, max_value))
+  if(mean_only){
+    return(mean_value)
+  }
+  else{
+    return(list(yield_anomaly_year, min_value, max_value))
+  }
+  
   
 }
