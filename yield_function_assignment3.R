@@ -6,8 +6,8 @@ yield_function_assignment3 = function(x1 = -0.015, x2 = -0.0046, x3 = -0.07, x4 
   # create summary of the mean max and min temperatures, and the mean precipitation by month
   
   clim_month = climate %>% 
-    group_by(month, year) %>% 
-    summarize(meantmax = mean(tmax_c), meantmin = mean(tmin_c), precip=mean(precip)) 
+    dplyr::group_by(month, year) %>% 
+    dplyr::summarize(meantmax = mean(tmax_c), meantmin = mean(tmin_c), precip=mean(precip)) 
   
   # filter for months of interest for almonds
   # january - precipitation
