@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Loading in necessary packages, the data, and the updated yield model
+# Loading in necessary packages, the data, and the updated yield model
 
 ```{r}
 
@@ -29,43 +29,103 @@ yield_function_assignment3(climate = clim)
 
 ```
 
-## Performing a sensitivity analysis of how mean anomaly varies ALL of the parameters used in the yield model 
+# Performing a sensitivity analysis of how mean anomaly varies ALL of the parameters used in the yield model 
+# Using the LHS method:
 
 ```{r}
 
 # Assuming parameters are normally distributed with standard deviation of 20% mean value
 
+# First defining the range of input parameters
+
+factors = c()
+
+# Deciding how many parameter sets to run
+
+nsets = 100
+
+# Indicating which distribution
+
+q = c()
+
+# Defining arguments
+
+### standard deviation is 0.20 * mean = 
+
+q.arg = list(list(mean = , sd = ), )
+
+# Generating the samples
+
+y = LHS(NULL, factors, nsets, q, q.arg)
+LHS_pars = get.data(y)
+
+# Creating a data frame to store the results when we run the model
+
+LHS_results = matrix(nrow=nsets, ncol= )
+
+# Now running the model over these parameter sets
+### We will use the faster way, using mapply (versus for loop)
+
+LHS_model_results = mapply(FUN = yield_function_assignment3, , , MoreArgs = list(clim=clim))
+
+
+tmp= mapply(FUN=almond, Tmincoeff1=sens_pars$Tmincoeff1, Tmincoeff2=sens_pars$Tmincoeff2, MoreArgs=list(clim=clim))
+
+# Putting the results in our previously created matrix
+
+LHS_results = matrix((unlist(LHS_model_results)), ncol= , byrow=TRUE)
+
+### Assigning column names
+
+colnames(LHS_results)=c("","")
 
 ```
 
-## Rank the parameters in term of their sensitivity
+## Ranking the parameters in term of their sensitivity
 
 ```{r}
+
+# use plotprcc to graph or use the prcc column of the data frame to determine the ranks?
 
 ```
 
-## Graph uncertainty in mean yield anomaly across all parameter uncertainty (boxplot and cummulative distribution of the output).
+## Graphing uncertainty in mean yield anomaly across all parameter uncertainty (boxplot and cumulative distribution of the output)
+
+```{r}
+
+# use tell() and plotscatter or ggplot and geom_boxplot()
+
+```
+
+
+# Repeating using the Sobol method:
+
+```{r}
+
+
+
+```
+
+## Ranking the parameters in term of their sensitivity
+
+```{r}
+
+
+
+```
+
+## Graphing uncertainty in mean yield anomaly across all parameter uncertainty (boxplot and cumulative distribution of the output)
 
 ```{r}
 
 
 ```
 
-## Repeat using the LHS method:
+
+# Repeating using twice as many parameter sets as you did in your first sensitivity analysis, to evaluate how this changes the sensitivity results
 
 ```{r}
 
-```
-
-## Repeat using the Sobol method:
-
-```{r}
-
-```
-
-## Repeat using twice as many parameter sets as you did in your first sensitivity analysis, to evaluate how this changes the sensitivity results
-
-```{r}
 
 ```
 
