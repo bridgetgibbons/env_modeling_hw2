@@ -32,6 +32,8 @@ source("yield_function_assignment3.R")
 
 yield_function_assignment3(climate = clim)
 
+# Because our function has mean_only set to TRUE, the value printed below is our mean value
+
 ```
 
 # Performing a sensitivity analysis of how mean anomaly varies ALL of the parameters used in the yield model 
@@ -43,7 +45,7 @@ yield_function_assignment3(climate = clim)
 
 # First defining the range of input parameters
 
-factors = c()
+factors = c("x1", "x2", "x3", "x4", "intercept", "climate", "mean_only")
 
 # Deciding how many parameter sets to run
 
@@ -51,13 +53,13 @@ nsets = 100
 
 # Indicating which distribution
 
-q = c()
+q = c("qnorm", "qnorm", "qnorm", "qnorm", "qnorm", "qnorm", "qnorm")
 
 # Defining arguments
 
-### standard deviation is 0.20 * mean = 
+### standard deviation is 0.20 * mean = (0.20 * -0.4255) = -0.0851
 
-q.arg = list(list(mean = , sd = ), )
+q.arg = list(list(mean = -0.4255, sd = -0.0851), )
 
 # Generating the samples
 
@@ -73,7 +75,7 @@ LHS_results = matrix(nrow=nsets, ncol= )
 
 LHS_model_results = mapply(FUN = yield_function_assignment3, , , MoreArgs = list(clim=clim))
 
-
+# this is example below, remove when done
 tmp= mapply(FUN=almond, Tmincoeff1=sens_pars$Tmincoeff1, Tmincoeff2=sens_pars$Tmincoeff2, MoreArgs=list(clim=clim))
 
 # Putting the results in our previously created matrix
@@ -127,7 +129,7 @@ colnames(LHS_results)=c("","")
 ```
 
 
-# Repeating using twice as many parameter sets as you did in your first sensitivity analysis, to evaluate how this changes the sensitivity results
+# Repeating both methods using twice as many parameter sets as you did in your first sensitivity analysis, to evaluate how this changes the sensitivity results
 
 ```{r}
 
