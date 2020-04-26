@@ -198,11 +198,19 @@ plot(sens_yield_sobel)
 # Repeating both methods using twice as many parameter sets as you did in your first sensitivity analysis, to evaluate how this changes the sensitivity results
 
 ```{r}
+
 # For LHS method
 nsets = 2 * 100
-# For Sobol method
-np = 2 * 500
+
 
 ```
 
-## 
+```{r}
+
+# For Sobol method
+np = 2 * 500
+
+
+```
+ 
+ 
