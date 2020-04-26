@@ -57,9 +57,17 @@ q = c("qnorm", "qnorm", "qnorm", "qnorm", "qnorm", "qnorm", "qnorm")
 
 # Defining arguments
 
-### standard deviation is 0.20 * mean = (0.20 * -0.4255) = -0.0851
+### standard deviation is 0.20 * mean
 
-q.arg = list(list(mean = -0.4255, sd = -0.0851), )
+sd_x1 = 0.20 * -0.015
+sd_x2 = 0.20 * -0.0046
+sd_x3 = 0.20 * -0.07
+sd_x4 = 0.20 * 0.0043
+sd_intercept = 0.20 * 0.28
+sd_climate =  
+sd_mean_only =
+
+q.arg = list(list(mean = -0.015, sd = sd_x1), list(mean = -0.0046, sd = sd_x2), list(mean = -0.07, sd = sd_x3), list(mean = 0.0043, sd = sd_x4), )
 
 # Generating the samples
 
@@ -68,23 +76,20 @@ LHS_pars = get.data(y)
 
 # Creating a data frame to store the results when we run the model
 
-LHS_results = matrix(nrow=nsets, ncol= )
+LHS_results = matrix(nrow=nsets, ncol= 7)
 
 # Now running the model over these parameter sets
 ### We will use the faster way, using mapply (versus for loop)
 
-LHS_model_results = mapply(FUN = yield_function_assignment3, , , MoreArgs = list(clim=clim))
-
-# this is example below, remove when done
-tmp= mapply(FUN=almond, Tmincoeff1=sens_pars$Tmincoeff1, Tmincoeff2=sens_pars$Tmincoeff2, MoreArgs=list(clim=clim))
+LHS_model_results = mapply(FUN=yield_function_assignment3, x1=LHS_pars$x1, x2=LHS_pars$x2, x3=LHS_pars$x3, x4=LHS_pars$x4, intercept=LHS_pars$intercept, climate=LHS_pars$climate,  MoreArgs=list(clim=clim))
 
 # Putting the results in our previously created matrix
 
-LHS_results = matrix((unlist(LHS_model_results)), ncol= , byrow=TRUE)
+LHS_results = matrix((unlist(LHS_model_results)), ncol= 7, byrow=TRUE)
 
 ### Assigning column names
 
-colnames(LHS_results)=c("","")
+colnames(LHS_results)=c("x1","x2", "x3", "x4", )
 
 ```
 
@@ -94,13 +99,33 @@ colnames(LHS_results)=c("","")
 
 # use plotprcc to graph or use the prcc column of the data frame to determine the ranks?
 
+y = pse::tell(y, t(LHS_results), res.names=c("x1","x2", "x3", "x4"))
+
+pse::plotprcc(y)
+y$prcc
+
+## From the printed results below, we can see that the rank of the parameters (from largest to smallest) are:
+
+
+
 ```
 
 ## Graphing uncertainty in mean yield anomaly across all parameter uncertainty (boxplot and cumulative distribution of the output)
 
 ```{r}
 
-# use tell() and plotscatter or ggplot and geom_boxplot()
+# using plotscatter
+
+pse::plotscatter(y, col="blue", cex=5)
+
+# ggplot and geom_boxplot()
+
+LHS_results = as.data.frame(LHS_results)
+ggplot(LHS_results, aes(x1, x2, x3, x4))+geom_point()+labs(y="x1", "x2", "x3", "x4")
+
+# now need to add uncertainty bounds on our estimates
+
+
 
 ```
 
@@ -173,7 +198,10 @@ sens_yield$prcc
 # Repeating both methods using twice as many parameter sets as you did in your first sensitivity analysis, to evaluate how this changes the sensitivity results
 
 ```{r}
-
+# For LHS method
+nsets = 2 * 100
+# For Sobol method
+np = 2 * 500
 
 ```
 
