@@ -45,7 +45,7 @@ yield_function_assignment3(climate = clim)
 
 # First defining the range of input parameters
 
-factors = c("x1", "x2", "x3", "x4", "intercept", "climate", "mean_only")
+factors = c("x1", "x2", "x3", "x4", "intercept")
 
 # Deciding how many parameter sets to run
 
@@ -53,43 +53,42 @@ nsets = 100
 
 # Indicating which distribution
 
-q = c("qnorm", "qnorm", "qnorm", "qnorm", "qnorm", "qnorm", "qnorm")
+q = c("qnorm", "qnorm", "qnorm", "qnorm", "qnorm")
 
 # Defining arguments
 
-### standard deviation is 0.20 * mean
+### standard deviation is 0.20 * mean (the value of the parameter in the function)
 
 sd_x1 = 0.20 * -0.015
 sd_x2 = 0.20 * -0.0046
 sd_x3 = 0.20 * -0.07
 sd_x4 = 0.20 * 0.0043
 sd_intercept = 0.20 * 0.28
-sd_climate =  
-sd_mean_only =
 
-q.arg = list(list(mean = -0.015, sd = sd_x1), list(mean = -0.0046, sd = sd_x2), list(mean = -0.07, sd = sd_x3), list(mean = 0.0043, sd = sd_x4), )
+q.arg = list(list(mean = -0.015, sd = sd_x1), list(mean = -0.0046, sd = sd_x2), list(mean = -0.07, sd = sd_x3), list(mean = 0.0043, sd = sd_x4), list(mean = 0.28, sd = sd_intercept))
 
 # Generating the samples
 
 y = LHS(NULL, factors, nsets, q, q.arg)
 LHS_pars = get.data(y)
+head(LHS_pars)
 
 # Creating a data frame to store the results when we run the model
 
-LHS_results = matrix(nrow=nsets, ncol= 7)
+LHS_results = matrix(nrow=nsets, ncol= 5)
 
 # Now running the model over these parameter sets
 ### We will use the faster way, using mapply (versus for loop)
 
-LHS_model_results = mapply(FUN=yield_function_assignment3, x1=LHS_pars$x1, x2=LHS_pars$x2, x3=LHS_pars$x3, x4=LHS_pars$x4, intercept=LHS_pars$intercept, climate=LHS_pars$climate,  MoreArgs=list(clim=clim))
+LHS_model_results = mapply(FUN=yield_function_assignment3, x1=LHS_pars$x1, x2=LHS_pars$x2, x3=LHS_pars$x3, x4=LHS_pars$x4, intercept=LHS_pars$intercept,  MoreArgs=list(clim=clim))
 
 # Putting the results in our previously created matrix
 
-LHS_results = matrix((unlist(LHS_model_results)), ncol= 7, byrow=TRUE)
+LHS_results = matrix((unlist(LHS_model_results)), ncol= 5, byrow=TRUE)
 
 ### Assigning column names
 
-colnames(LHS_results)=c("x1","x2", "x3", "x4", )
+colnames(LHS_results)=c("x1","x2", "x3", "x4", "intercept")
 
 ```
 
@@ -99,7 +98,7 @@ colnames(LHS_results)=c("x1","x2", "x3", "x4", )
 
 # use plotprcc to graph or use the prcc column of the data frame to determine the ranks?
 
-y = pse::tell(y, t(LHS_results), res.names=c("x1","x2", "x3", "x4"))
+y = pse::tell(y, t(LHS_results), res.names=c("x1","x2", "x3", "x4", "intercept"))
 
 pse::plotprcc(y)
 y$prcc
@@ -121,11 +120,16 @@ pse::plotscatter(y, col="blue", cex=5)
 # ggplot and geom_boxplot()
 
 LHS_results = as.data.frame(LHS_results)
-ggplot(LHS_results, aes(x1, x2, x3, x4))+geom_point()+labs(y="x1", "x2", "x3", "x4")
+ggplot(LHS_results, aes(x1, x2, x3, x4, intercept))+geom_point()+labs(y="x1", "x2", "x3", "x4", "intercept")
 
 # now need to add uncertainty bounds on our estimates
 
+# what is our value and key ??
 
+LHS_results = LHS_results %>% pivot_longer(value="mean_value", key="yield")
+ggplot(LHS_results, aes(yield, mean_value, col=yield))+geom_boxplot()+labs(y="Yield (as anomoly)")
+
+ggplot(LHS_results, aes(yield, mean_value, col=yield))+geom_boxplot()+labs(y="Yield (as anomoly)")+facet_wrap(~yield, scales="free")
 
 ```
 
