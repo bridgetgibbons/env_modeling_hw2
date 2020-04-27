@@ -59,11 +59,11 @@ q = c("qnorm", "qnorm", "qnorm", "qnorm", "qnorm")
 
 ### standard deviation is 0.20 * mean (the value of the parameter in the function)
 
-sd_x1 = 0.20 * -0.015
-sd_x2 = 0.20 * -0.0046
-sd_x3 = 0.20 * -0.07
-sd_x4 = 0.20 * 0.0043
-sd_intercept = 0.20 * 0.28
+sd_x1 = abs(0.20 * -0.015)
+sd_x2 = abs(0.20 * -0.0046)
+sd_x3 = abs(0.20 * -0.07)
+sd_x4 = abs(0.20 * 0.0043)
+sd_intercept = abs(0.20 * 0.28)
 
 q.arg = list(list(mean = -0.015, sd = sd_x1), list(mean = -0.0046, sd = sd_x2), list(mean = -0.07, sd = sd_x3), list(mean = 0.0043, sd = sd_x4), list(mean = 0.28, sd = sd_intercept))
 
@@ -103,7 +103,7 @@ y = pse::tell(y, t(LHS_results), res.names=c("x1","x2", "x3", "x4", "intercept")
 pse::plotprcc(y)
 y$prcc
 
-## From the printed results below, we can see that the rank of the parameters (from largest to smallest) are:
+## From the PRCC graphs, we can see that the rank of the parameters (from largest to smallest) are: intercept, x4, x2, x3, and x1.
 
 
 
@@ -124,12 +124,12 @@ ggplot(LHS_results, aes(x1, x2, x3, x4, intercept))+geom_point()+labs(y="x1", "x
 
 # now need to add uncertainty bounds on our estimates
 
-# what is our value and key ??
 
-LHS_results = LHS_results %>% pivot_longer(value="mean_value", key="yield")
-ggplot(LHS_results, aes(yield, mean_value, col=yield))+geom_boxplot()+labs(y="Yield (as anomoly)")
+LHS_results = LHS_results %>% gather(value="mean_value", key="yield")
 
-ggplot(LHS_results, aes(yield, mean_value, col=yield))+geom_boxplot()+labs(y="Yield (as anomoly)")+facet_wrap(~yield, scales="free")
+ggplot(LHS_results, aes(yield, mean_value, col=yield))+geom_boxplot()+labs(y="Yield (as Anomaly)")
+
+ggplot(LHS_results, aes(yield, mean_value, col=yield))+geom_boxplot()+labs(y="Yield (as Anomaly)")+facet_wrap(~yield, scales="free")
 
 ```
 
@@ -192,8 +192,18 @@ plot(sens_yield_sobel)
 ```{r}
 
 
+
+
 ```
 
+# Now we can compare the LHS and Sobel graphs
+
+```{r}
+
+ggplot(LHS_results, aes(yield, mean_value, col=yield)) + geom_boxplot() + geom_boxplot(sobol results) + labs(y="Yield (as Anomaly)")
+
+
+```
 
 # Repeating both methods using twice as many parameter sets as you did in your first sensitivity analysis, to evaluate how this changes the sensitivity results
 
@@ -223,7 +233,22 @@ LHS_results_2 = matrix((unlist(LHS_model_results_2)), ncol= 5, byrow=TRUE)
 
 colnames(LHS_results_2)=c("x1","x2", "x3", "x4", "intercept")
 
-# print the df only, or rank and graph??
+
+# ranking the parameters
+y_2 = pse::tell(y_2, t(LHS_results_2), res.names=c("x1","x2", "x3", "x4", "intercept"))
+
+pse::plotprcc(y_2)
+y_2$prcc
+
+# now graphing
+
+LHS_results_2 = LHS_results_2 %>% gather(value="mean_value", key="yield")
+
+ggplot(LHS_results_2, aes(yield, mean_value, col=yield))+geom_boxplot()+labs(y="Yield (as Anomaly)")
+
+# and comparing these secondary results to the first LHS analysis (where we hadn't doubled nsets)
+
+ggplot(LHS_results_2, aes(yield, mean_value, col=yield))+geom_boxplot()+ geom_boxplot(LHS_results) + labs(y="Yield (as Anomaly)")
 
 
 ```
