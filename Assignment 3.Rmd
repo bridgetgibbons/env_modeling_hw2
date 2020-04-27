@@ -6,7 +6,9 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE)
 ```
 
 # Loading in necessary packages, the data, and the updated yield model
@@ -138,43 +140,36 @@ ggplot(LHS_results, aes(yield, mean_value, col=yield))+geom_boxplot()+labs(y="Yi
 
 ```{r}
 
-# sobel method
+# sobol method
 
 # number of parameters
 np = 500
 
 # distributions for parameters
 
-sobel_x1 = rnorm(mean = -0.015, sd = 0.003, n = np)
-sobel_x2 = rnorm(mean = -0.0046, sd = 0.00092, n = np)
-sobel_x3 = rnorm(mean = -0.07, sd = 0.014, n = np)
-sobel_x4 = rnorm(mean = 0.0043, sd = 0.00086, n = np)
+sobol_x1 = rnorm(mean = -0.015, sd = 0.003, n = np)
+sobol_x2 = rnorm(mean = -0.0046, sd = 0.00092, n = np)
+sobol_x3 = rnorm(mean = -0.07, sd = 0.014, n = np)
+sobol_x4 = rnorm(mean = 0.0043, sd = 0.00086, n = np)
 
-X1 = cbind.data.frame(sobel_x1, sobel_x2, sobel_x3, sobel_x4)
+X1 = cbind.data.frame(sobol_x1, sobol_x2, sobol_x3, sobol_x4)
 
 # repeate distribution sampling
 
-sobel_x1 = rnorm(mean = -0.015, sd = 0.003, n = np)
-sobel_x2 = rnorm(mean = -0.0046, sd = 0.00092, n = np)
-sobel_x3 = rnorm(mean = -0.07, sd = 0.014, n = np)
-sobel_x4 = rnorm(mean = 0.0043, sd = 0.00086, n = np)
+sobol_x1 = rnorm(mean = -0.015, sd = 0.003, n = np)
+sobol_x2 = rnorm(mean = -0.0046, sd = 0.00092, n = np)
+sobol_x3 = rnorm(mean = -0.07, sd = 0.014, n = np)
+sobol_x4 = rnorm(mean = 0.0043, sd = 0.00086, n = np)
 
-X2 = cbind.data.frame(sobel_x1, sobel_x2, sobel_x3, sobel_x4)
+X2 = cbind.data.frame(sobol_x1, sobol_x2, sobol_x3, sobol_x4)
 
-sens_yield_sobel = sobol2007(model = NULL, X1, X2, nboot = 100)
+sens_yield_sobol = sobol2007(model = NULL, X1, X2, nboot = 100)
 
 # run model for the parameter sets
 
-sobel_result = mapply(FUN = yield_function_assignment3, x1 = sens_yield_sobel$X$sobel_x1, x2 = sens_yield_sobel$X$sobel_x2, x3 = sens_yield_sobel$X$sobel_x3, x4 = sens_yield_sobel$X$sobel_x4, MoreArgs = list(climate = clim))
+sobol_result = mapply(FUN = yield_function_assignment3, x1 = sens_yield_sobol$X$sobol_x1, x2 = sens_yield_sobol$X$sobol_x2, x3 = sens_yield_sobol$X$sobol_x3, x4 = sens_yield_sobol$X$sobol_x4, MoreArgs = list(climate = clim))
 
-sens_yield_sobel = sensitivity::tell(sens_yield_sobel, sobel_result, sobel_result.names="ga")
-
-sens_yield_sobel$S
-
-sens_yield_sobel$T
-
-print(sens_yield_sobel)
-plot(sens_yield_sobel)
+sens_yield_sobol = sensitivity::tell(sens_yield_sobol, sobol_result, sobol_result.names="ga")
 
 
 ```
@@ -183,7 +178,12 @@ plot(sens_yield_sobel)
 
 ```{r}
 
+sens_yield_sobol$S
 
+sens_yield_sobol$T
+
+print(sens_yield_sobol)
+plot(sens_yield_sobol)
 
 ```
 
@@ -207,8 +207,44 @@ nsets = 2 * 100
 
 ```{r}
 
-# For Sobol method
-np = 2 * 500
+# sobol method
+
+# number of parameters
+np = 1000
+
+# distributions for parameters
+
+sobol_x1 = rnorm(mean = -0.015, sd = 0.003, n = np)
+sobol_x2 = rnorm(mean = -0.0046, sd = 0.00092, n = np)
+sobol_x3 = rnorm(mean = -0.07, sd = 0.014, n = np)
+sobol_x4 = rnorm(mean = 0.0043, sd = 0.00086, n = np)
+
+X1 = cbind.data.frame(sobol_x1, sobol_x2, sobol_x3, sobol_x4)
+
+# repeate distribution sampling
+
+sobol_x1 = rnorm(mean = -0.015, sd = 0.003, n = np)
+sobol_x2 = rnorm(mean = -0.0046, sd = 0.00092, n = np)
+sobol_x3 = rnorm(mean = -0.07, sd = 0.014, n = np)
+sobol_x4 = rnorm(mean = 0.0043, sd = 0.00086, n = np)
+
+X2 = cbind.data.frame(sobol_x1, sobol_x2, sobol_x3, sobol_x4)
+
+sens_yield_sobol = sobol2007(model = NULL, X1, X2, nboot = 100)
+
+# run model for the parameter sets
+
+sobol_result = mapply(FUN = yield_function_assignment3, x1 = sens_yield_sobol$X$sobol_x1, x2 = sens_yield_sobol$X$sobol_x2, x3 = sens_yield_sobol$X$sobol_x3, x4 = sens_yield_sobol$X$sobol_x4, MoreArgs = list(climate = clim))
+
+sens_yield_sobol = sensitivity::tell(sens_yield_sobol, sobol_result, sobol_result.names="ga")
+
+sens_yield_sobol$S
+
+sens_yield_sobol$T
+
+print(sens_yield_sobol)
+plot(sens_yield_sobol)
+
 
 
 ```
