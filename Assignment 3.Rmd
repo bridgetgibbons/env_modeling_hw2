@@ -96,7 +96,7 @@ colnames(LHS_results)=c("x1","x2", "x3", "x4", "intercept")
 
 ```{r}
 
-# use plotprcc to graph or use the prcc column of the data frame to determine the ranks?
+# using plotprcc to graph and using the prcc column of the data frame to determine the ranks
 
 y = pse::tell(y, t(LHS_results), res.names=c("x1","x2", "x3", "x4", "intercept"))
 
@@ -200,7 +200,30 @@ plot(sens_yield_sobel)
 ```{r}
 
 # For LHS method
-nsets = 2 * 100
+nsets_2 = 2 * 100
+
+y_2 = LHS(NULL, factors, nsets_2, q, q.arg)
+LHS_pars_2 = get.data(y_2)
+head(LHS_pars_2)
+
+# Creating a data frame to store the results when we run the model
+
+LHS_results_2 = matrix(nrow=nsets_2, ncol= 5)
+
+# Now running the model over these parameter sets
+### We will use the faster way, using mapply (versus for loop)
+
+LHS_model_results_2 = mapply(FUN=yield_function_assignment3, x1=LHS_pars_2$x1, x2=LHS_pars_2$x2, x3=LHS_pars_2$x3, x4=LHS_pars_2$x4, intercept=LHS_pars_2$intercept,  MoreArgs=list(clim=clim))
+
+# Putting the results in our previously created matrix
+
+LHS_results_2 = matrix((unlist(LHS_model_results_2)), ncol= 5, byrow=TRUE)
+
+### Assigning column names
+
+colnames(LHS_results_2)=c("x1","x2", "x3", "x4", "intercept")
+
+# print the df only, or rank and graph??
 
 
 ```
