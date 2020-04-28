@@ -167,16 +167,15 @@ sens_yield_sobol_short = sobol2007(model = NULL, X1, X2, nboot = 100)
 
 # run model for the parameter sets
 
-sobol_result = mapply(FUN = yield_function_assignment3, x1 = sens_yield_sobol_short$X$sobol_x1, x2 = sens_yield_sobol_short$X$sobol_x2, x3 = sens_yield_sobol_short$X$sobol_x3, x4 = sens_yield_sobol_short$X$sobol_x4, intercept = sens_yield_sobol_short$X$sobol_int, MoreArgs = list(climate = clim))
+sobol_result = mapply(FUN = yield_function_assignment3, 
+                      x1 = sens_yield_sobol_short$X$sobol_x1, 
+                      x2 = sens_yield_sobol_short$X$sobol_x2, 
+                      x3 = sens_yield_sobol_short$X$sobol_x3, 
+                      x4 = sens_yield_sobol_short$X$sobol_x4, 
+                      intercept = sens_yield_sobol_short$X$sobol_int, 
+                      MoreArgs = list(climate = clim))
 
-sens_yield_sobol_short = sensitivity::tell(sens_yield_sobol_short, sobol_result, sobol_result.names="ga")
-
-
-```
-
-## Ranking the parameters in term of their sensitivity
-
-```{r}
+sens_yield_sobol_short = sensitivity::tell(sens_yield_sobol_short, sobol_result, sobol_result.names="mean_value")
 
 sens_yield_sobol_short$S
 
@@ -187,11 +186,41 @@ plot(sens_yield_sobol_short)
 
 ```
 
-## Graphing uncertainty in mean yield anomaly across all parameter uncertainty (boxplot and cumulative distribution of the output)
+## Ranking the parameters in term of their sensitivity
 
 ```{r}
 
 
+
+```
+
+## Graphing uncertainty in mean yield anomaly across all parameter uncertainty (boxplot and cumulative distribution of the output)
+
+```{r}
+
+s_short_result <- matrix((unlist(sens_yield_sobol_short)), ncol = 1, byrow = TRUE)
+colnames(s_short_result) = c("mean_value")
+
+s_short_result_df <- as.data.frame(s_short_result)
+
+# boxplot
+
+ggplot(data = s_short_result_df, aes(x = " ", y = mean_value)) +
+    geom_boxplot(fill = "green") +
+    labs( 
+     title = "Sobel Uncertainty",
+      x = "Almond",
+      y = "Yield (as anomoly)"
+      ) +
+    theme_classic()
+
+# cumulative distribution
+
+ggplot(s_short_result_df, aes(mean_value)) +
+  stat_ecdf(geom = "step") +
+  xlab("Mean Yield Anomaly (ton/acre)") +
+  labs(title = "Cumulative Distribution Sobel Method") +
+  theme_classic()
 
 
 ```
@@ -284,9 +313,15 @@ sens_yield_sobol_long = sobol2007(model = NULL, X1, X2, nboot = 100)
 
 # run model for the parameter sets
 
-sobol_result = mapply(FUN = yield_function_assignment3, x1 = sens_yield_sobol_long$X$sobol_x1, x2 = sens_yield_sobol_long$X$sobol_x2, x3 = sens_yield_sobol_long$X$sobol_x3, x4 = sens_yield_sobol_long$X$sobol_x4, intercept = sens_yield_sobol_long$X$sobol_int, MoreArgs = list(climate = clim))
+sobol_result = mapply(FUN = yield_function_assignment3, 
+                      x1 = sens_yield_sobol_long$X$sobol_x1, 
+                      x2 = sens_yield_sobol_long$X$sobol_x2, 
+                      x3 = sens_yield_sobol_long$X$sobol_x3, 
+                      x4 = sens_yield_sobol_long$X$sobol_x4, 
+                      intercept = sens_yield_sobol_long$X$sobol_int, 
+                      MoreArgs = list(climate = clim))
 
-sens_yield_sobol_long = sensitivity::tell(sens_yield_sobol_long, sobol_result, sobol_result.names="ga")
+sens_yield_sobol_long = sensitivity::tell(sens_yield_sobol_long, sobol_result, sobol_result.names="mean_value")
 
 sens_yield_sobol_long$S
 
