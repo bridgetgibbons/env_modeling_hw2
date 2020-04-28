@@ -138,7 +138,7 @@ ggplot(LHS_results, aes(yield, mean_value, col=yield))+geom_boxplot()+labs(y="Yi
 
 ```{r}
 
-# sobol method
+# sobol method - short
 
 # number of parameters
 np = 500
@@ -175,14 +175,14 @@ sobol_result = mapply(FUN = yield_function_assignment3,
                       intercept = sens_yield_sobol_short$X$sobol_int, 
                       MoreArgs = list(climate = clim))
 
-sens_yield_sobol_short = sensitivity::tell(sens_yield_sobol_short, sobol_result, sobol_result.names="mean_value")
+sobol_short_tell = sensitivity::tell(sens_yield_sobol_short, sobol_result, sobol_result.names="mean_value")
 
-sens_yield_sobol_short$S
+sobol_short_tell$S
 
-sens_yield_sobol_short$T
+sobol_short_tell$T
 
-print(sens_yield_sobol_short)
-plot(sens_yield_sobol_short)
+print(sobol_short_tell)
+plot(sobol_short_tell)
 
 ```
 
@@ -198,7 +198,7 @@ plot(sens_yield_sobol_short)
 
 ```{r}
 
-s_short_result <- matrix((unlist(sens_yield_sobol_short)), ncol = 1, byrow = TRUE)
+s_short_result <- matrix((unlist(sobol_result)), ncol = 1, byrow = TRUE)
 colnames(s_short_result) = c("mean_value")
 
 s_short_result_df <- as.data.frame(s_short_result)
@@ -206,7 +206,7 @@ s_short_result_df <- as.data.frame(s_short_result)
 # boxplot
 
 ggplot(data = s_short_result_df, aes(x = " ", y = mean_value)) +
-    geom_boxplot(fill = "green") +
+    geom_boxplot() +
     labs( 
      title = "Sobel Uncertainty",
       x = "Almond",
