@@ -208,7 +208,7 @@ s_short_result_df <- as.data.frame(s_short_result)
 ggplot(data = s_short_result_df, aes(x = " ", y = mean_value)) +
     geom_boxplot() +
     labs( 
-     title = "Sobel Uncertainty",
+     title = "Sobel-Short Uncertainty",
       x = "Almond",
       y = "Yield (as anomoly)"
       ) +
@@ -219,7 +219,7 @@ ggplot(data = s_short_result_df, aes(x = " ", y = mean_value)) +
 ggplot(s_short_result_df, aes(mean_value)) +
   stat_ecdf(geom = "step") +
   xlab("Mean Yield Anomaly (ton/acre)") +
-  labs(title = "Cumulative Distribution Sobel Method") +
+  labs(title = "Cumulative Distribution Sobel-Short Method") +
   theme_classic()
 
 
@@ -284,7 +284,7 @@ ggplot(LHS_results_2, aes(yield, mean_value, col=yield))+geom_boxplot()+ geom_bo
 
 ```{r}
 
-# sobol method
+# sobol method - long
 
 # number of parameters
 np = 1000
@@ -321,16 +321,40 @@ sobol_result = mapply(FUN = yield_function_assignment3,
                       intercept = sens_yield_sobol_long$X$sobol_int, 
                       MoreArgs = list(climate = clim))
 
-sens_yield_sobol_long = sensitivity::tell(sens_yield_sobol_long, sobol_result, sobol_result.names="mean_value")
+sobol_long_tell = sensitivity::tell(sens_yield_sobol_long, sobol_result, sobol_result.names="mean_value")
 
-sens_yield_sobol_long$S
+sobol_long_tell$S
 
-sens_yield_sobol_long$T
+sobol_long_tell$T
 
-print(sens_yield_sobol_long)
-plot(sens_yield_sobol_long)
+print(sobol_long_tell)
+plot(sobol_long_tell)
 
+# sobol - long plots
 
+s_long_result <- matrix((unlist(sobol_result)), ncol = 1, byrow = TRUE)
+colnames(s_long_result) = c("mean_value")
+
+s_long_result_df <- as.data.frame(s_long_result)
+
+# boxplot
+
+ggplot(data = s_long_result_df, aes(x = " ", y = mean_value)) +
+    geom_boxplot() +
+    labs( 
+     title = "Sobel-Long Uncertainty",
+      x = "Almond",
+      y = "Yield (as anomoly)"
+      ) +
+    theme_classic()
+
+# cumulative distribution
+
+ggplot(s_long_result_df, aes(mean_value)) +
+  stat_ecdf(geom = "step") +
+  xlab("Mean Yield Anomaly (ton/acre)") +
+  labs(title = "Cumulative Distribution Sobel-Long Method") +
+  theme_classic()
 
 ```
  
