@@ -1,0 +1,77 @@
+---
+title: "backup assignment 3"
+author: "Kaili Brande, Bridget Gibbons"
+date: "4/23/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE)
+```
+
+## Loading in necessary packages, the data, and the updated yield model
+
+```{r}
+library(ggplot2)
+library(pse)
+library(sensitivity)
+library(tidyverse)
+
+clim = data.frame(read_csv("clim.csv"))
+```
+
+```{r}
+# Adjust your almond model to  output ONLY the mean almond yield anomoly IF the users sets parameter (e.g mean_only = TRUE))
+
+source("yield_function_assignment3.R")
+```
+
+## Performing a sensitivity analysis of how mean anomaly varies ALL of the parameters used in the yield model 
+
+### Using the LHS method:
+
+```{r}
+# Assuming parameters are normally distributed with standard deviation of 20% mean value
+# First defining the range of input parameters
+
+factors = c("x1", "x2", "x3", "x4", "intercept")
+
+# Deciding how many parameter sets to run
+
+nsets = 100
+
+# Indicating which distribution
+
+q = c("qnorm", "qnorm", "qnorm", "qnorm", "qnorm")
+
+# Defining arguments
+### standard deviation is 0.20 * mean (the value of the parameter in the function)
+
+sd_x1 = abs(0.20 * -0.015)
+sd_x2 = abs(0.20 * -0.0046)
+sd_x3 = abs(0.20 * -0.07)
+sd_x4 = abs(0.20 * 0.0043)
+sd_intercept = abs(0.20 * 0.28)
+q.arg = list(list(mean = -0.015, sd = sd_x1), list(mean = -0.0046, sd = sd_x2), list(mean = -0.07, sd = sd_x3), list(mean = 0.0043, sd = sd_x4), list(mean = 0.28, sd = sd_intercept))
+
+# Generating the samples
+y = LHS(NULL, factors, nsets, q, q.arg)
+LHS_pars = get.data(y)
+head(LHS_pars)
+
+# Creating a data frame to store the results when we run the model
+LHS_results = matrix(nrow=nsets, ncol= 5)
+
+# Now running the model over these parameter sets
+### We will use the faster way, using mapply (versus for loop)
+
+LHS_model_results = mapply(FUN=yield_function_assignment3, x1=LHS_pars$x1, x2=LHS_pars$x2, x3=LHS_pars$x3, x4=LHS_pars$x4, intercept=LHS_pars$intercept,  MoreArgs=list(clim=clim))
+
+# Putting the results in our previously created matrix
+LHS_results = matrix((unlist(LHS_model_results)), ncol= 5, byrow=TRUE)
+
+### Assigning column names
+colnames(LHS_results)=c("x1","x2", "x3", "x4", "intercept")
+```
