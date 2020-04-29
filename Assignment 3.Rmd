@@ -76,7 +76,7 @@ LHS_results = matrix((unlist(LHS_model_results)), ncol= 5, byrow=TRUE)
 colnames(LHS_results)=c("x1","x2", "x3", "x4", "intercept")
 ```
 
-### Ranking the parameters in term of their sensitivity
+### Ranking the parameters in terms of their sensitivity
 
 ```{r}
 # using plotprcc to graph and using the prcc column of the data frame to determine the ranks
@@ -87,7 +87,9 @@ pse::plotprcc(y)
 
 y$prcc
 
-## From the PRCC graphs, we can see that the rank of the parameters (from largest to smallest) are: intercept, x4, x2, x3, and x1.
+
+## From the PRCC graphs, we can see the ranks of the parameters below.
+
 ```
 
 ### Graphing uncertainty in mean yield anomaly across all parameter uncertainty (boxplot and cumulative distribution of the output)
@@ -97,19 +99,30 @@ y$prcc
 
 pse::plotscatter(y, col="blue", cex=5)
 
-# ggplot and geom_boxplot()
-
-LHS_results = as.data.frame(LHS_results)
-
-ggplot(LHS_results, aes(x1, x2, x3, x4, intercept))+geom_point()+labs(y="x1", "x2", "x3", "x4", "intercept")
 
 # now need to add uncertainty bounds on our estimates
+
+LHS_results = as.data.frame(LHS_results)
 
 LHS_results = LHS_results %>% gather(value="mean_value", key="yield")
 
 ggplot(LHS_results, aes(yield, mean_value, col=yield))+geom_boxplot()+labs(y="Yield (as Anomaly)")
 
-ggplot(LHS_results, aes(yield, mean_value, col=yield))+geom_boxplot()+labs(y="Yield (as Anomaly)")+facet_wrap(~yield, scales="free")
+# with separate scales
+
+ggplot(LHS_results, aes(yield, mean_value, col=yield))+
+  geom_boxplot()+
+  labs(y="Yield (as Anomaly)")+
+  facet_wrap(~yield, scales="free")
+
+# cumulative distribution
+
+ggplot(LHS_results, aes(mean_value)) +
+  stat_ecdf(geom = "step") +
+  xlab("Mean Yield Anomaly (ton/acre)") +
+  labs(title = "Cumulative Distribution LHS Method") +
+  theme_classic()
+
 ```
 
 
@@ -187,15 +200,6 @@ s_short_result_box <- gather(s_short_result_2, key = "parameter", value = "value
   
 # boxplot
 
-#ggplot(data = s_short_result_df, aes(x = "", y = mean_value)) +
-   # geom_boxplot() +
-   # labs( 
-    # title = "Sobol-Short Uncertainty",
-    #  x = "Almond",
-     # y = "Yield (as anomoly)"
-     # ) +
-    #theme_classic()
-
 boxplot2 <- ggplot(data = s_short_result_box, aes(x = parameter, y = values)) +
     geom_boxplot() +
     labs( 
@@ -217,11 +221,6 @@ ggplot(s_short_result_df, aes(mean_value)) +
 
 ```
 
-# Now we can compare the LHS and Sobol graphs
-
-```{r}
-#ggplot(LHS_results, aes(yield, mean_value, col=yield)) + geom_boxplot() + geom_boxplot(sobol results) + labs(y="Yield (as Anomaly)")
-```
 
 ## Repeating both methods using twice as many parameter sets as you did in your first sensitivity analysis, to evaluate how this changes the sensitivity results
 
@@ -266,12 +265,20 @@ y_2$prcc
 
 # now graphing
 
-#LHS_results_2 = LHS_results_2 %>% gather(value="mean_value", key="yield")
-#ggplot(LHS_results_2, aes(yield, mean_value, col=yield))+geom_boxplot()+labs(y="Yield (as Anomaly)")
+LHS_results_2 = as.data.frame(LHS_results_2)
+
+LHS_results_2 = LHS_results_2 %>% gather(value="mean_value", key="yield")
+
+ggplot(LHS_results_2, aes(yield, mean_value, col=yield))+geom_boxplot()+labs(y="Yield (as Anomaly)")
 
 # and comparing these secondary results to the first LHS analysis (where we hadn't doubled nsets)
 
-#ggplot(LHS_results_2, aes(yield, mean_value, col=yield))+geom_boxplot()+ geom_boxplot(LHS_results) + labs(y="Yield (as Anomaly)")
+# boxplot
+ggplot() + geom_boxplot(LHS_results_2, aes(yield, mean_value, col=yield)) + geom_boxplot(LHS_results, aes(yield, mean_value, col=yield)) + labs(y="Yield (as Anomaly)")
+
+# cumulative distribution
+
+
 ```
 
 ### Sobol Method
@@ -343,15 +350,6 @@ s_long_result_2 <- cbind.data.frame(sobol_long_tell$X, mean_value = sobol_long_t
 s_long_result_box <- gather(s_long_result_2, key = "parameter", value = "values", sobol_x1, sobol_x2, sobol_x3, sobol_x4, sobol_int_5)
   
 # boxplot
-
-#ggplot(data = s_long_result_df, aes(x = " ", y = mean_value)) +
-  #  geom_boxplot() +
-   # labs( 
-   #  title = "Sobol-Long Uncertainty",
-    #  x = "Almond",
-    #  y = "Yield (as anomoly)"
-    #  ) +
-   # theme_classic()
 
 boxplot2_long <- ggplot(data = s_long_result_box, aes(x = parameter, y = values)) +
     geom_boxplot() +
