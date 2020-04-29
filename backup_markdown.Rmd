@@ -1,5 +1,5 @@
 ---
-title: "backup assignment 3"
+title: "Assignment 3"
 author: "Kaili Brande, Bridget Gibbons"
 date: "4/23/2020"
 output: html_document
@@ -74,4 +74,332 @@ LHS_results = matrix((unlist(LHS_model_results)), ncol= 5, byrow=TRUE)
 
 ### Assigning column names
 colnames(LHS_results)=c("x1","x2", "x3", "x4", "intercept")
+```
+
+### Ranking the parameters in terms of their sensitivity
+
+```{r}
+# using plotprcc to graph and using the prcc column of the data frame to determine the ranks
+
+y = pse::tell(y, t(LHS_results), res.names=c("x1","x2", "x3", "x4", "intercept"))
+
+pse::plotprcc(y)
+
+y$prcc
+
+
+## From the PRCC graphs, we can see the ranks of the parameters below.
+
+```
+
+### Graphing uncertainty in mean yield anomaly across all parameter uncertainty (boxplot and cumulative distribution of the output)
+
+```{r}
+# using plotscatter
+
+pse::plotscatter(y, col="blue", cex=5)
+
+
+# now need to add uncertainty bounds on our estimates
+
+LHS_results = as.data.frame(LHS_results)
+
+LHS_results = LHS_results %>% gather(value="mean_value", key="yield")
+
+ggplot(LHS_results, aes(yield, mean_value, col=yield))+geom_boxplot()+labs(y="Yield (as Anomaly)")
+
+# with separate scales
+
+ggplot(LHS_results, aes(yield, mean_value, col=yield))+
+  geom_boxplot()+
+  labs(y="Yield (as Anomaly)")+
+  facet_wrap(~yield, scales="free")
+
+# cumulative distribution
+
+ggplot(LHS_results, aes(mean_value)) +
+  stat_ecdf(geom = "step") +
+  xlab("Mean Yield Anomaly (ton/acre)") +
+  labs(title = "Cumulative Distribution LHS Method") +
+  theme_classic()
+
+```
+
+
+## Using the Sobol method:
+
+```{r}
+# sobol method - short
+
+# number of parameters
+np = 500
+
+# distributions for parameters
+sobol_x1 = rnorm(mean = -0.015, sd = 0.003, n = np)
+sobol_x2 = rnorm(mean = -0.0046, sd = 0.00092, n = np)
+sobol_x3 = rnorm(mean = -0.07, sd = 0.014, n = np)
+sobol_x4 = rnorm(mean = 0.0043, sd = 0.00086, n = np)
+sobol_int_5 = rnorm(mean = 0.28, sd = 0.056, n = np)
+
+X1 = cbind.data.frame(sobol_x1, sobol_x2, sobol_x3, sobol_x4, sobol_int_5)
+
+# repeate distribution sampling
+sobol_x1 = rnorm(mean = -0.015, sd = 0.003, n = np)
+sobol_x2 = rnorm(mean = -0.0046, sd = 0.00092, n = np)
+sobol_x3 = rnorm(mean = -0.07, sd = 0.014, n = np)
+sobol_x4 = rnorm(mean = 0.0043, sd = 0.00086, n = np)
+sobol_int_5 = rnorm(mean = 0.28, sd = 0.056, n = np)
+
+X2 = cbind.data.frame(sobol_x1, sobol_x2, sobol_x3, sobol_x4, sobol_int_5)
+
+
+sens_yield_sobol_short = sobol2007(model = NULL, X1, X2, nboot = 100)
+
+# run model for the parameter sets
+
+sobol_result = mapply(FUN = yield_function_assignment3, 
+                      x1 = sens_yield_sobol_short$X$sobol_x1, 
+                      x2 = sens_yield_sobol_short$X$sobol_x2, 
+                      x3 = sens_yield_sobol_short$X$sobol_x3, 
+                      x4 = sens_yield_sobol_short$X$sobol_x4, 
+                      intercept = sens_yield_sobol_short$X$sobol_int_5, 
+                      MoreArgs = list(climate = clim))
+
+sobol_short_tell = sensitivity::tell(sens_yield_sobol_short, sobol_result, sobol_result.names="mean_value")
+
+sobol_short_tell$S
+
+sobol_short_tell$T
+
+#print(sobol_short_tell)
+plot(sobol_short_tell)
+```
+
+### Ranking the parameters in term of their sensitivity
+
+```{r}
+param_df_s <- as.data.frame(sobol_short_tell$S$original)
+row.names(param_df_s) = c("1", "2", "3", "4", "5")
+
+order(param_df_s, decreasing = TRUE)
+
+# The order of parameters is below, and correspond to their order in the yield equation, with 5 being the intercept
+```
+
+### Graphing uncertainty in mean yield anomaly across all parameter uncertainty (boxplot and cumulative distribution of the output)
+
+```{r}
+
+s_short_result <- matrix((unlist(sobol_result)), ncol = 1, byrow = TRUE)
+colnames(s_short_result) = c("mean_value")
+
+s_short_result_df <- as.data.frame(s_short_result)
+
+s_short_result_2 <- cbind.data.frame(sobol_short_tell$X, mean_value = sobol_short_tell$y)
+s_short_result_box <- gather(s_short_result_2, key = "parameter", value = "values", sobol_x1, sobol_x2, sobol_x3, sobol_x4, sobol_int_5)
+  
+# boxplot
+
+boxplot2 <- ggplot(data = s_short_result_box, aes(x = parameter, y = values)) +
+    geom_boxplot() +
+    labs( 
+     title = "Sobol-Short Variance",
+      x = "Parameters",
+      y = "Yield (as anomoly)"
+      ) +
+    theme_classic()
+
+boxplot2
+
+# cumulative distribution
+
+ggplot(s_short_result_df, aes(mean_value)) +
+  stat_ecdf(geom = "step") +
+  xlab("Mean Yield Anomaly (ton/acre)") +
+  labs(title = "Cumulative Distribution Sobol-Short Method") +
+  theme_classic()
+
+```
+
+
+## Repeating both methods using twice as many parameter sets as you did in your first sensitivity analysis, to evaluate how this changes the sensitivity results
+
+###LHS Method:
+
+```{r}
+# For LHS method
+
+nsets_2 = 2 * 100
+
+y_2 = LHS(NULL, factors, nsets_2, q, q.arg)
+
+LHS_pars_2 = get.data(y_2)
+
+head(LHS_pars_2)
+
+# Creating a data frame to store the results when we run the model
+LHS_results_2 = matrix(nrow=nsets_2, ncol= 5)
+
+
+# Now running the model over these parameter sets
+
+### We will use the faster way, using mapply (versus for loop)
+
+LHS_model_results_2 = mapply(FUN=yield_function_assignment3, x1=LHS_pars_2$x1, x2=LHS_pars_2$x2, x3=LHS_pars_2$x3, x4=LHS_pars_2$x4, intercept=LHS_pars_2$intercept,  MoreArgs=list(clim=clim))
+
+# Putting the results in our previously created matrix
+
+LHS_results_2 = matrix((unlist(LHS_model_results_2)), ncol= 5, byrow=TRUE)
+
+### Assigning column names
+
+colnames(LHS_results_2)=c("x1","x2", "x3", "x4", "intercept")
+
+# ranking the parameters
+
+y_2 = pse::tell(y_2, t(LHS_results_2), res.names=c("x1","x2", "x3", "x4", "intercept"))
+
+pse::plotprcc(y_2)
+
+y_2$prcc
+
+# now graphing
+
+LHS_results_2 = as.data.frame(LHS_results_2)
+
+LHS_results_2 = LHS_results_2 %>% gather(value="mean_value", key="yield")
+
+ggplot(LHS_results_2, aes(yield, mean_value, col=yield))+geom_boxplot()+labs(y="Yield (as Anomaly)")
+
+# and comparing these secondary results to the first LHS analysis (where we hadn't doubled nsets)
+
+# boxplot
+ggplot() + geom_boxplot(LHS_results_2, aes(yield, mean_value, col=yield)) + geom_boxplot(LHS_results, aes(yield, mean_value, col=yield)) + labs(y="Yield (as Anomaly)")
+
+# cumulative distribution
+
+
+```
+
+### Sobol Method
+
+```{r}
+# sobol method - long
+
+# number of parameters
+np = 1000
+
+# distributions for parameters
+sobol_x1 = rnorm(mean = -0.015, sd = 0.003, n = np)
+sobol_x2 = rnorm(mean = -0.0046, sd = 0.00092, n = np)
+sobol_x3 = rnorm(mean = -0.07, sd = 0.014, n = np)
+sobol_x4 = rnorm(mean = 0.0043, sd = 0.00086, n = np)
+sobol_int_5 = rnorm(mean = 0.28, sd = 0.056, n = np)
+
+X1 = cbind.data.frame(sobol_x1, sobol_x2, sobol_x3, sobol_x4, sobol_int_5)
+
+# repeate distribution sampling
+sobol_x1 = rnorm(mean = -0.015, sd = 0.003, n = np)
+sobol_x2 = rnorm(mean = -0.0046, sd = 0.00092, n = np)
+sobol_x3 = rnorm(mean = -0.07, sd = 0.014, n = np)
+sobol_x4 = rnorm(mean = 0.0043, sd = 0.00086, n = np)
+sobol_int_5 = rnorm(mean = 0.28, sd = 0.056, n = np)
+
+X2 = cbind.data.frame(sobol_x1, sobol_x2, sobol_x3, sobol_x4, sobol_int_5)
+
+sens_yield_sobol_long = sobol2007(model = NULL, X1, X2, nboot = 100)
+
+# run model for the parameter sets
+
+sobol_result = mapply(FUN = yield_function_assignment3, 
+                      x1 = sens_yield_sobol_long$X$sobol_x1, 
+                      x2 = sens_yield_sobol_long$X$sobol_x2, 
+                      x3 = sens_yield_sobol_long$X$sobol_x3, 
+                      x4 = sens_yield_sobol_long$X$sobol_x4, 
+                      intercept = sens_yield_sobol_long$X$sobol_int_5, 
+                      MoreArgs = list(climate = clim))
+
+sobol_long_tell = sensitivity::tell(sens_yield_sobol_long, sobol_result, sobol_result.names="mean_value")
+
+#sobol_long_tell$S
+
+#sobol_long_tell$T
+
+print(sobol_long_tell)
+plot(sobol_long_tell)
+```
+
+```{r}
+# parameter effect
+
+param_df <- as.data.frame(sobol_long_tell$S$original)
+row.names(param_df) = c("1", "2", "3", "4", "5")
+
+order(param_df, decreasing = TRUE)
+
+```
+
+```{r}
+# sobol - long plots
+
+s_long_result <- matrix((unlist(sobol_result)), ncol = 1, byrow = TRUE)
+colnames(s_long_result) = c("mean_value")
+s_long_result_df <- as.data.frame(s_long_result)
+
+s_long_result_2 <- cbind.data.frame(sobol_long_tell$X, mean_value = sobol_long_tell$y)
+s_long_result_box <- gather(s_long_result_2, key = "parameter", value = "values", sobol_x1, sobol_x2, sobol_x3, sobol_x4, sobol_int_5)
+  
+# boxplot
+
+boxplot2_long <- ggplot(data = s_long_result_box, aes(x = parameter, y = values)) +
+    geom_boxplot() +
+    labs( 
+     title = "Sobol-Long Variance",
+      x = "Parameters",
+      y = "Yield (as anomoly)"
+      ) +
+    theme_classic()
+
+boxplot2_long
+
+# cumulative distribution
+ggplot(s_long_result_df, aes(mean_value)) +
+  stat_ecdf(geom = "step") +
+  xlab("Mean Yield Anomaly (ton/acre)") +
+  labs(title = "Cumulative Distribution Sobol-Long Method") +
+  theme_classic()
+```
+ 
+ ## Comparing the short and long versions for each method:
+ 
+ ### LHS
+ 
+```{r}
+```
+ 
+ 
+ ### Sobol
+ 
+```{r}
+# boxplot
+ggplot() +
+  geom_boxplot(data = s_short_result_box, aes(x = parameter, y = values), fill = "blue") +
+  geom_boxplot(data = s_long_result_box, aes(x = parameter, y = values), fill = "green") +
+  theme_classic() +
+  labs( 
+     title = "Sobol-Long Uncertainty",
+      x = "Almond",
+      y = "Yield (as anomoly)"
+      )
+  
+# cumulative distribution
+ggplot() +
+  stat_ecdf(geom = "step", data = s_short_result_df, aes(mean_value), color = "blue") +
+  stat_ecdf(geom = "step", data = s_long_result_df, aes(mean_value), color = "green") +
+  theme_classic() +
+  labs( 
+     title = "Sobol Method - Cumulative Distribution",
+     x = "Mean Yield Anomaly (ton/acre)",
+     y = "Cululative Distribution"
+      )
 ```
