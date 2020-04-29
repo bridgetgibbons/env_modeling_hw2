@@ -103,7 +103,7 @@ y = pse::tell(y, t(LHS_results), res.names=c("x1","x2", "x3", "x4", "intercept")
 pse::plotprcc(y)
 y$prcc
 
-## From the PRCC graphs, we can see the ranks of the parameters below.
+order(y$prcc$original)
 
 ```
 
@@ -249,7 +249,6 @@ ggplot(s_short_result_df, aes(mean_value)) +
 
 ```
 
-
 ## Repeating both methods using twice as many parameter sets as you did in your first sensitivity analysis, to evaluate how this changes the sensitivity results
 
 ###LHS Method:
@@ -281,11 +280,14 @@ LHS_results_2 = matrix((unlist(LHS_model_results_2)), ncol= 5, byrow=TRUE)
 colnames(LHS_results_2)=c("x1","x2", "x3", "x4", "intercept")
 
 
+
 # ranking the parameters
 y_2 = pse::tell(y_2, t(LHS_results_2), res.names=c("x1","x2", "x3", "x4", "intercept"))
 
 pse::plotprcc(y_2)
 y_2$prcc
+
+order(y_2$prcc$original)
 
 # now graphing
 
@@ -294,13 +296,6 @@ LHS_results_2 = as.data.frame(LHS_results_2)
 LHS_results_2 = LHS_results_2 %>% gather(value="mean_value", key="yield")
 
 ggplot(LHS_results_2, aes(yield, mean_value, col=yield))+geom_boxplot()+labs(y="Yield (as Anomaly)")
-
-# and comparing these secondary results to the first LHS analysis (where we hadn't doubled nsets)
-
-# boxplot
-ggplot() + geom_boxplot(LHS_results_2, aes(yield, mean_value, col=yield)) + geom_boxplot(LHS_results, aes(yield, mean_value, col=yield)) + labs(y="Yield (as Anomaly)")
-
-# cumulative distribution
 
 
 ```
@@ -393,6 +388,31 @@ ggplot(s_long_result_df, aes(mean_value)) +
  
 ```{r}
 
+# boxplot
+
+ggplot() +
+  geom_boxplot(data = LHS_results_2, aes(x = " ", y = mean_value), fill = "blue") +
+  geom_boxplot(data = LHS_results, aes(x = " ", y = mean_value), fill = "green") +
+  theme_classic() +
+  labs( 
+     title = "LHS Uncertainty",
+      x = "Almond",
+      y = "Yield (as anomoly)"
+      )
+
+
+# cumulative distribution
+
+ggplot() +
+  stat_ecdf(geom = "step", data = LHS_results_2, aes(mean_value), color = "blue") +
+  stat_ecdf(geom = "step", data = LHS_results, aes(mean_value), color = "green") +
+  theme_classic() +
+  labs( 
+     title = "LHS Method - Cumulative Distribution",
+     x = "Mean Yield Anomaly (ton/acre)",
+     y = "Cumulative Distribution"
+      )
+
 ```
  
  
@@ -423,7 +443,7 @@ ggplot() +
   labs( 
      title = "Sobol Method - Cumulative Distribution",
      x = "Mean Yield Anomaly (ton/acre)",
-     y = "Cululative Distribution"
+     y = "Cumulative Distribution"
       )
 
 
