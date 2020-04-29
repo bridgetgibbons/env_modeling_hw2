@@ -418,3 +418,8 @@ ggplot() +
      x = "Mean Yield Anomaly (ton/acre)"
       )
 ```
+
+### Short write up describing what you learned from the sensitivity analysis
+
+The method for completing a sensitivity analysis should be chosen based on the type of analysis you are interested in, as results can vary. The LHS method generates random samples from intervals of equal probability, based on distribution. The Sobol method covers the space very evenly. If covariance between variables is a possibility, it may be preferable to use the Sobol method. With the Sobol method, it is easy to assess the difference between a parameter's main effect and its total effect on the result. When setting up a sensitivity analysis, it is important to carefully consider the range over which the parameters will be varied, especially if the parameters are representative of real-world conditions. 
+
