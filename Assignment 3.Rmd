@@ -105,7 +105,7 @@ y = pse::tell(y, t(LHS_results), res.names=c("x1","x2", "x3", "x4", "intercept")
 pse::plotprcc(y)
 y$prcc
 
-## From the PRCC graphs, we can see that the rank of the parameters (from largest to smallest) are: intercept, x4, x2, x3, and x1.
+## From the PRCC graphs, we can see the ranks of the parameters below.
 
 ```
 
@@ -117,19 +117,26 @@ y$prcc
 
 pse::plotscatter(y, col="blue", cex=5)
 
-# ggplot and geom_boxplot()
-
-LHS_results = as.data.frame(LHS_results)
-ggplot(LHS_results, aes(x1, x2, x3, x4, intercept))+geom_point()+labs(y="x1", "x2", "x3", "x4", "intercept")
 
 # now need to add uncertainty bounds on our estimates
 
+LHS_results = as.data.frame(LHS_results)
 
 LHS_results = LHS_results %>% gather(value="mean_value", key="yield")
 
 ggplot(LHS_results, aes(yield, mean_value, col=yield))+geom_boxplot()+labs(y="Yield (as Anomaly)")
 
+# with separate scales
+
 ggplot(LHS_results, aes(yield, mean_value, col=yield))+geom_boxplot()+labs(y="Yield (as Anomaly)")+facet_wrap(~yield, scales="free")
+
+# cumulative distribution
+
+ggplot(LHS_results, aes(mean_value)) +
+  stat_ecdf(geom = "step") +
+  xlab("Mean Yield Anomaly (ton/acre)") +
+  labs(title = "Cumulative Distribution LHS Method") +
+  theme_classic()
 
 ```
 
@@ -205,7 +212,7 @@ s_short_result_df <- as.data.frame(s_short_result)
 
 # boxplot
 
-ggplot(data = s_short_result_df, aes(x = " ", y = mean_value)) +
+sob <- ggplot(data = s_short_result_df, aes(x = " ", y = mean_value)) +
     geom_boxplot() +
     labs( 
      title = "Sobel-Short Uncertainty",
@@ -213,6 +220,7 @@ ggplot(data = s_short_result_df, aes(x = " ", y = mean_value)) +
       y = "Yield (as anomoly)"
       ) +
     theme_classic()
+
 
 # cumulative distribution
 
@@ -229,7 +237,11 @@ ggplot(s_short_result_df, aes(mean_value)) +
 
 ```{r}
 
-ggplot(LHS_results, aes(yield, mean_value, col=yield)) + geom_boxplot() + geom_boxplot(sobol results) + labs(y="Yield (as Anomaly)")
+# boxplots
+ggplot(LHS_results, aes(yield, mean_value, col=yield)) + geom_boxplot() + geom_boxplot(aes(sob)) + labs(y="Yield (as Anomaly)")
+
+# cumulative distribution
+
 
 
 ```
@@ -271,13 +283,18 @@ y_2$prcc
 
 # now graphing
 
+LHS_results_2 = as.data.frame(LHS_results_2)
+
 LHS_results_2 = LHS_results_2 %>% gather(value="mean_value", key="yield")
 
 ggplot(LHS_results_2, aes(yield, mean_value, col=yield))+geom_boxplot()+labs(y="Yield (as Anomaly)")
 
 # and comparing these secondary results to the first LHS analysis (where we hadn't doubled nsets)
 
-ggplot(LHS_results_2, aes(yield, mean_value, col=yield))+geom_boxplot()+ geom_boxplot(LHS_results) + labs(y="Yield (as Anomaly)")
+# boxplot
+ggplot() + geom_boxplot(LHS_results_2, aes(yield, mean_value, col=yield)) + geom_boxplot(LHS_results, aes(yield, mean_value, col=yield)) + labs(y="Yield (as Anomaly)")
+
+# cumulative distribution
 
 
 ```
