@@ -74,6 +74,7 @@ LHS_results = matrix((unlist(LHS_model_results)), ncol= 5, byrow=TRUE)
 
 ### Assigning column names
 colnames(LHS_results)=c("x1","x2", "x3", "x4", "intercept")
+
 ```
 
 ### Ranking the parameters in terms of their sensitivity
@@ -220,7 +221,7 @@ ggplot(s_short_result_df, aes(mean_value)) +
 
 ## Repeating both methods using twice as many parameter sets as you did in your first sensitivity analysis, to evaluate how this changes the sensitivity results
 
-###LHS Method:
+### LHS Method:
 
 ```{r}
 # For LHS method
@@ -374,7 +375,7 @@ ggplot() +
   labs( 
      title = "LHS Uncertainty",
       x = "Almond",
-      y = "Yield (as anomoly)"
+      y = "Yield (as Anomaly)"
       )
 
 
