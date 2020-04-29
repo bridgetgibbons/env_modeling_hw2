@@ -1,5 +1,5 @@
 ---
-title: "Assignment 3"
+title: "Assignment_3"
 author: "Kaili Brande, Bridget Gibbons"
 date: "4/23/2020"
 output: html_document
@@ -181,7 +181,7 @@ row.names(param_df_s) = c("1", "2", "3", "4", "5")
 
 order(param_df_s, decreasing = TRUE)
 
-# The order of parameters is below, and correspond to their order in the yield equation, with 5 being the intercept
+# The order of parameters is listed above, with numbers corresponding to their order in the yield equation, with 5 being the intercept
 ```
 
 ### Graphing uncertainty in mean yield anomaly across all parameter uncertainty (boxplot and cumulative distribution of the output)
@@ -199,11 +199,11 @@ s_short_result_box <- gather(s_short_result_2, key = "parameter", value = "value
 # boxplot
 
 boxplot2 <- ggplot(data = s_short_result_box, aes(x = parameter, y = values)) +
-    geom_boxplot() +
-    labs( 
-     title = "Sobol-Short Variance",
+    geom_boxplot(aes(color = parameter)) +
+    labs(
+      title = "Sobol - Short Method",
       x = "Parameters",
-      y = "Yield (as anomoly)"
+      y = "Yield (As Anomaly)"
       ) +
     theme_classic()
 
@@ -342,11 +342,11 @@ s_long_result_box <- gather(s_long_result_2, key = "parameter", value = "values"
 # boxplot
 
 boxplot2_long <- ggplot(data = s_long_result_box, aes(x = parameter, y = values)) +
-    geom_boxplot() +
+    geom_boxplot(aes(color = parameter)) +
     labs( 
-     title = "Sobol-Long Variance",
+     title = "Sobol-Long Method",
       x = "Parameters",
-      y = "Yield (as anomoly)"
+      y = "Yield (As Anomaly)"
       ) +
     theme_classic()
 
@@ -374,7 +374,7 @@ ggplot() +
   theme_classic() +
   labs( 
      title = "LHS Uncertainty",
-      x = "Almond",
+      x = "Parameter",
       y = "Yield (as Anomaly)"
       )
 
@@ -387,8 +387,7 @@ ggplot() +
   theme_classic() +
   labs( 
      title = "LHS Method - Cumulative Distribution",
-     x = "Mean Yield Anomaly (ton/acre)",
-     y = "Cumulative Distribution"
+     x = "Mean Yield Anomaly (ton/acre)"
       )
 
 
@@ -404,8 +403,8 @@ ggplot() +
   geom_boxplot(data = s_long_result_box, aes(x = parameter, y = values), fill = "green") +
   theme_classic() +
   labs( 
-     title = "Sobol-Long Uncertainty",
-      x = "Almond",
+     title = "Sobol Uncertainty",
+      x = "Parameter",
       y = "Yield (as anomoly)"
       )
   
@@ -416,7 +415,6 @@ ggplot() +
   theme_classic() +
   labs( 
      title = "Sobol Method - Cumulative Distribution",
-     x = "Mean Yield Anomaly (ton/acre)",
-     y = "Cumulative Distribution"
+     x = "Mean Yield Anomaly (ton/acre)"
       )
 ```
