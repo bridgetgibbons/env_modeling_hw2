@@ -87,7 +87,6 @@ pse::plotprcc(y)
 
 y$prcc
 
-
 ```
 
 ### Graphing uncertainty in mean yield anomaly across all parameter uncertainty (boxplot and cumulative distribution of the output)
@@ -259,8 +258,6 @@ y_2 = pse::tell(y_2, t(LHS_results_2), res.names=c("x1","x2", "x3", "x4", "inter
 pse::plotprcc(y_2)
 
 y_2$prcc
-
-order(y_2$prcc$original)
 
 # now graphing
 
