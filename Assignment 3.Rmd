@@ -179,7 +179,7 @@ sobol_short_tell$S
 
 sobol_short_tell$T
 
-print(sobol_short_tell)
+#print(sobol_short_tell)
 plot(sobol_short_tell)
 
 ```
@@ -201,9 +201,13 @@ colnames(s_short_result) = c("mean_value")
 
 s_short_result_df <- as.data.frame(s_short_result)
 
+s_short_result_2 <- cbind.data.frame(sobol_short_tell$X, mean_value = sobol_short_tell$y)
+
+s_short_result_box <- gather(s_short_result_2, key = "parameter", value = "values", sobol_x1, sobol_x2, sobol_x3, sobol_x4, sobol_int)
+  
 # boxplot
 
-ggplot(data = s_short_result_df, aes(x = " ", y = mean_value)) +
+ggplot(data = s_short_result_df, aes(x = "", y = mean_value)) +
     geom_boxplot() +
     labs( 
      title = "Sobol-Short Uncertainty",
@@ -211,6 +215,17 @@ ggplot(data = s_short_result_df, aes(x = " ", y = mean_value)) +
       y = "Yield (as anomoly)"
       ) +
     theme_classic()
+
+boxplot2 <- ggplot(data = s_short_result_box, aes(x = parameter, y = values)) +
+    geom_boxplot() +
+    labs( 
+     title = "Sobol-Short Uncertainty",
+      x = "Almond",
+      y = "Yield (as anomoly)"
+      ) +
+    theme_classic()
+
+boxplot2
 
 # cumulative distribution
 
@@ -227,7 +242,7 @@ ggplot(s_short_result_df, aes(mean_value)) +
 
 ```{r}
 
-ggplot(LHS_results, aes(yield, mean_value, col=yield)) + geom_boxplot() + geom_boxplot(sobol results) + labs(y="Yield (as Anomaly)")
+#ggplot(LHS_results, aes(yield, mean_value, col=yield)) + geom_boxplot() + geom_boxplot(sobol results) + labs(y="Yield (as Anomaly)")
 
 
 ```
